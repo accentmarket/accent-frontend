@@ -58,7 +58,7 @@
       align-items: center;
       gap: 6px;
       font-weight: 600;
-      color: var(--accent-green);
+      color: white;
     }
 
     /* Табы */
@@ -80,7 +80,7 @@
 
     .subtab.active {
       background: var(--accent);
-      color: black;
+      color: white;
       box-shadow: 0 0 8px rgba(255, 42, 109, 0.6);
     }
 
@@ -352,6 +352,30 @@
     .fab.hidden {
       display: none;
     }
+	.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Увеличиваем высоту модального окна */
+.modal {
+  padding: 60px 16px 24px !important;
+  min-height: 240px;
+}
   </style>
 </head>
 <body>
@@ -360,7 +384,7 @@
   <div class="logo">
     <img src="accent-logo.png" style="height: 32px; margin-right: 8px;">
   </div>
-  <div class="balance">оч много TON</div>
+  <div class="balance" style="background:rgba(235,10,155,1); padding: 4px; padding-left: 10px; padding-right: 10px; border-radius:15px;">оч много TON</div>
 </div>
 
   <div class="content" id="main-content">
@@ -463,15 +487,18 @@
   <div class="fab hidden" id="fab-btn">+</div>
 
   <div class="modal" id="gift-modal">
-    <div class="modal-header">
-      <div><span id="modal-emoji"></span> <span id="modal-name"></span></div>
-      <div class="gift-price" id="modal-price"></div>
-      <div class="gift-qty" id="modal-qty"></div>
-    </div>
-    <div class="modal-btns" id="modal-buttons">
-      <!-- Заполняется JS -->
-    </div>
+  <div class="modal-close" id="modal-close">
+    <img src="close-icon.png" alt="Закрыть" style="width:24px; height:24px;">
   </div>
+  <div class="modal-header">
+    <div><span id="modal-emoji"></span> <span id="modal-name"></span></div>
+    <div class="gift-price" id="modal-price"></div>
+    <div class="gift-qty" id="modal-qty"></div>
+  </div>
+  <div class="modal-btns" id="modal-buttons">
+    <!-- Заполняется JS -->
+  </div>
+</div>
 
   <!-- Нижнее меню — смайлики ОСТАВЛЕНЫ как иконки -->
   <div class="footer-nav">
