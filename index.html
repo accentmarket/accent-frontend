@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Accent — Market of Telegram Gifts</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0a011a;
+      --accent: #FF2A6D;
+      --accent-green: #00FFA3;
+      --accent-blue: #00F5FF;
+      --card-bg: #140a2a;
+      --text: #FFFFFF;
+      --text-secondary: #B0A0C0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      /* Используем нейтральный системный шрифт */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+      overflow-x: hidden;
+      font-size: 14px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(10, 1, 26, 0.7);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      /* Убран смайлик, текст белый */
+      color: var(--text);
+    }
+
+    .balance {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--accent-green);
+    }
+
+    /* Табы */
+    .subtabs {
+      display: flex;
+      padding: 8px 16px;
+      background: rgba(20, 10, 42, 0.5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .subtab {
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .subtab.active {
+      background: var(--accent);
+      color: black;
+      box-shadow: 0 0 8px rgba(255, 42, 109, 0.6);
+    }
+
+    /* Контент */
+    .content {
+      padding: 16px;
+      min-height: calc(100vh - 140px);
+    }
+
+    /* Фильтры — без смайликов */
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* Карточки */
+    .gift-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .gift-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .gift-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 42, 109, 0.2);
+    }
+
+    .gift-image {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 8px;
+      font-size: 24px;
+    }
+
+    .gift-name {
+      font-size: 12px;
+      margin: 4px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gift-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-green);
+      margin-top: 4px;
+    }
+
+    .gift-qty {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Списки */
+    .list-item {
+      background: var(--card-bg);
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .list-status {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255, 42, 109, 0.2);
+      color: var(--accent);
+    }
+
+    .list-status.pending { background: rgba(255, 165, 0, 0.2); color: #FFA500; }
+    .list-status.completed { background: rgba(0, 255, 163, 0.2); color: var(--accent-green); }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: black;
+      font-weight: 600;
+    }
+
+    .btn-green {
+      background: var(--accent-green);
+      color: black;
+      font-weight: 600;
+    }
+
+    /* Форма */
+    .form-group {
+      margin: 16px 0;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: white;
+      font-family: inherit;
+    }
+
+    /* Модальное окно */
+    .modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 16px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .modal.open {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-channel {
+      background: var(--accent-blue);
+      color: black;
+    }
+
+    .btn-buy {
+      background: var(--accent);
+      color: black;
+    }
+
+    .btn-nft {
+      background: var(--accent-green);
+      color: black;
+    }
+
+    /* Нижнее меню — смайлики остаются ТОЛЬКО здесь (для иконок) */
+    .footer-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      background: rgba(10, 1, 26, 0.8);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(255, 42, 109, 0.4);
+      cursor: pointer;
+      z-index: 99;
+      font-family: inherit;
+    }
+
+    .fab.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Шапка -->
+<div class="header">
+  <div class="logo">
+    <img src="accent-logo.png" style="height: 32px; margin-right: 8px;">
+  </div>
+  <div class="balance">оч много TON</div>
+</div>
+
+  <div class="content" id="main-content">
+    <!-- Маркет -->
+    <div id="market-screen">
+      <div class="subtabs">
+        <div class="subtab active" data-subtab="channels">Каналы</div>
+        <div class="subtab" data-subtab="nft">NFT</div>
+      </div>
+
+      <div class="filters">
+        <div class="filter-btn">Модель</div>
+        <div class="filter-btn">Цена</div>
+        <div class="filter-btn">Сортировка</div>
+      </div>
+
+      <div class="gift-grid" id="gift-list">
+        <!-- Заполняется JS -->
+      </div>
+    </div>
+
+    <!-- Мои подарки -->
+    <div id="my-gifts-screen" class="hidden">
+      <div class="subtabs">
+        <div class="subtab active" data-subtab="listed">Выставленные</div>
+        <div class="subtab" data-subtab="purchases">Покупки</div>
+      </div>
+
+      <div id="listed-content">
+        <div class="list-item">
+          <div class="list-header">
+            <div>Rose • Канал</div>
+            <div class="gift-price">4.2 TON</div>
+          </div>
+          <div>Количество: 3 шт.</div>
+          <div class="list-status">Активен</div>
+          <div class="btn-group">
+            <button class="btn btn-outline">Редактировать</button>
+            <button class="btn btn-outline">Снять</button>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-header">
+            <div>Crown NFT • NFT</div>
+            <div class="gift-price">12.0 TON</div>
+          </div>
+          <div class="list-status">Активен</div>
+          <div class="btn-group">
+            <button class="btn btn-outline">Редактировать</button>
+            <button class="btn btn-outline">Снять</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="purchases-content" class="hidden">
+        <div class="list-item">
+          <div class="list-header">
+            <div>Rose • Канал</div>
+            <div class="gift-price">4.2 TON</div>
+          </div>
+          <div class="list-status pending">Ожидает выдачи</div>
+          <div>Осталось: 89 мин</div>
+        </div>
+        <div class="list-item">
+          <div class="list-header">
+            <div>Fire NFT • NFT</div>
+            <div class="gift-price">6.8 TON</div>
+          </div>
+          <div class="list-status completed">Выдан</div>
+          <button class="btn btn-green">Открыть</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Активность -->
+    <div id="activity-screen" class="hidden">
+      <h3>История операций</h3>
+      <div class="list-item">
+        <div>2 ноя, 14:30 — Покупка: Rose (Канал)</div>
+        <div class="gift-price" style="text-align: right;">-4.2 TON</div>
+      </div>
+      <div class="list-item">
+        <div>2 ноя, 12:15 — Продажа: Crown NFT</div>
+        <div class="gift-price" style="text-align: right; color: var(--accent-green);">+12.0 TON</div>
+      </div>
+    </div>
+
+    <!-- Профиль -->
+    <div id="profile-screen" class="hidden">
+      <div style="text-align: center; margin: 20px 0;">
+        <div style="width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">I</div>
+        <h3>Иван Иванов</h3>
+        <p>@ivan</p>
+        <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;">27.80 TON</div>
+        <button class="btn btn-primary" style="width: 100%;">Пополнить баланс</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fab hidden" id="fab-btn">+</div>
+
+  <div class="modal" id="gift-modal">
+    <div class="modal-header">
+      <div><span id="modal-emoji"></span> <span id="modal-name"></span></div>
+      <div class="gift-price" id="modal-price"></div>
+      <div class="gift-qty" id="modal-qty"></div>
+    </div>
+    <div class="modal-btns" id="modal-buttons">
+      <!-- Заполняется JS -->
+    </div>
+  </div>
+
+  <!-- Нижнее меню — смайлики ОСТАВЛЕНЫ как иконки -->
+  <div class="footer-nav">
+    <div class="nav-item active" data-tab="market">
+      <div class="nav-icon">🛍️</div>
+      <div>Маркет</div>
+    </div>
+    <div class="nav-item" data-tab="my-gifts">
+      <div class="nav-icon">🎁</div>
+      <div>Мои подарки</div>
+    </div>
+    <div class="nav-item" data-tab="activity">
+      <div class="nav-icon">📊</div>
+      <div>Активность</div>
+    </div>
+    <div class="nav-item" data-tab="profile">
+      <div class="nav-icon">👤</div>
+      <div>Профиль</div>
+    </div>
+  </div>
+
+  <script>
+    const gifts = {
+      channels: [
+        { name: "Rose", emoji: "🌹", price: 4.2, qty: 3 },
+        { name: "Fire", emoji: "🔥", price: 6.8, qty: 1 },
+        { name: "Crown", emoji: "👑", price: 12.0, qty: 5 },
+        { name: "Star", emoji: "⭐", price: 3.5, qty: 2 },
+      ],
+      nft: [
+        { name: "Rose+", emoji: "🌹", price: 8.5 },
+        { name: "Inferno", emoji: "🔥", price: 15.0 },
+        { name: "Galaxy", emoji: "🌌", price: 22.0 },
+      ]
+    };
+
+    function init() {
+      renderGifts('channels');
+      setupEventListeners();
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+
+    function renderGifts(type) {
+      const container = document.getElementById('gift-list');
+      container.innerHTML = '';
+      const list = gifts[type] || [];
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'gift-card';
+        card.innerHTML = `
+          <div class="gift-image">${item.emoji}</div>
+          <div class="gift-name">${item.name}</div>
+          <div class="gift-price">${item.price} TON</div>
+          ${type === 'channels' ? `<div class="gift-qty">${item.qty} шт.</div>` : ''}
+        `;
+        card.addEventListener('click', () => openModal(item, type));
+        container.appendChild(card);
+      });
+    }
+
+    function openModal(item, type) {
+      document.getElementById('modal-emoji').textContent = item.emoji;
+      document.getElementById('modal-name').textContent = item.name;
+      document.getElementById('modal-price').textContent = `${item.price} TON`;
+      const qtyEl = document.getElementById('modal-qty');
+      if (type === 'channels') {
+        qtyEl.textContent = `${item.qty} шт.`;
+        qtyEl.style.display = 'block';
+      } else {
+        qtyEl.style.display = 'none';
+      }
+
+      const btns = document.getElementById('modal-buttons');
+      if (type === 'channels') {
+        btns.innerHTML = `
+          <button class="modal-btn btn-channel">Открыть канал</button>
+          <button class="modal-btn btn-buy">Купить канал</button>
+        `;
+      } else {
+        btns.innerHTML = `
+          <button class="modal-btn btn-nft">Купить NFT</button>
+        `;
+      }
+
+      document.getElementById('gift-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('gift-modal').classList.remove('open');
+    }
+
+    function setupEventListeners() {
+      document.getElementById('gift-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('gift-modal')) closeModal();
+      });
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const tab = item.dataset.tab;
+          document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          ['market', 'my-gifts', 'activity', 'profile'].forEach(t => {
+            document.getElementById(`${t}-screen`).classList.toggle('hidden', t !== tab);
+          });
+          document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
+        });
+      });
+
+      document.querySelectorAll('[data-subtab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const parent = tab.closest('.subtabs');
+          parent.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const type = tab.dataset.subtab;
+          if (parent.closest('#market-screen')) {
+            renderGifts(type === 'listed' ? 'channels' : (type === 'channels' ? 'channels' : 'nft'));
+          } else if (parent.closest('#my-gifts-screen')) {
+            document.getElementById('listed-content').classList.toggle('hidden', type !== 'listed');
+            document.getElementById('purchases-content').classList.toggle('hidden', type !== 'purchases');
+          }
+        });
+      });
+
+      document.getElementById('fab-btn').addEventListener('click', () => {
+        alert('Форма "Выставить на продажу" — будет реализована позже.');
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          alert(`Фильтр: ${btn.textContent}`);
+        });
+      });
+    }
+
+    window.onload = init;
+  </script>
+  <script>
+  // Функция для отправки ордера на бэкенд
+  async function createOrder(orderData) {
+    const initData = Telegram.WebApp.initData;
+    try {
+      const response = await fetch('https://accent-vercel-dteb.vercel.app/api/create_order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ initData, order: orderData })
+      });
+      if (response.ok) {
+        alert('✅ Ордер выставлен!');
+      } else {
+        const error = await response.json();
+        alert('❌ Ошибка: ' + (error.detail || 'Неизвестная ошибка'));
+      }
+    } catch (err) {
+      alert('⚠️ Не удалось подключиться к серверу');
+    }
+  }
+
+  // Привязываем функцию к кнопке FAB («+»)
+  document.addEventListener('DOMContentLoaded', () => {
+    const fabBtn = document.getElementById('fab-btn');
+    if (fabBtn) {
+      fabBtn.addEventListener('click', () => {
+        const order = {
+          gift_type: 'channel',
+          gift_name: 'Rose',
+          price_ton: 4.2,
+          channel_link: 'https://t.me/test_channel'
+        };
+        createOrder(order);
+      });
+    }
+  });
+</script>
+</body>
+</html>
