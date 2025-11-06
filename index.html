@@ -500,33 +500,25 @@
   </div>
 </div>
 
-  <!-- Нижнее меню — смайлики ОСТАВЛЕНЫ как иконки -->
-  <div class="footer-nav">
-    <div class="nav-item active" data-tab="market">
-      <div class="nav-icon">
-	  <img src="market-icon.png" style="height: 21px;">
-	  </div>
-      <div>Маркет</div>
-    </div>
-    <div class="nav-item" data-tab="my-gifts">
-      <div class="nav-icon">
-	  <img src="gift-icon.png" style="height: 21px;">
-	  </div>
-      <div>Мои подарки</div>
-    </div>
-    <div class="nav-item" data-tab="activity">
-      <div class="nav-icon">
-	  <img src="activity.png" style="height: 21px;">
-	  </div>
-      <div>Активность</div>
-    </div>
-    <div class="nav-item" data-tab="profile">
-      <div class="nav-icon">
-	  <img src="profile.png" style="height: 18px;">
-	  </div>
-      <div>Профиль</div>
-    </div>
+  <!-- Нижнее меню -->
+<div class="footer-nav">
+  <div class="nav-item active" data-tab="market" data-inactive="market-icon.png" data-active="market-icon-active.png">
+    <div class="nav-icon"><img src="market-icon-active.png" style="height: 21px;"></div>
+    <div>Маркет</div>
   </div>
+  <div class="nav-item" data-tab="my-gifts" data-inactive="gift-icon.png" data-active="gift-icon-active.png">
+    <div class="nav-icon"><img src="gift-icon.png" style="height: 21px;"></div>
+    <div>Мои подарки</div>
+  </div>
+  <div class="nav-item" data-tab="activity" data-inactive="activity.png" data-active="activity-active.png">
+    <div class="nav-icon"><img src="activity.png" style="height: 21px;"></div>
+    <div>Активность</div>
+  </div>
+  <div class="nav-item" data-tab="profile" data-inactive="profile.png" data-active="profile-active.png">
+    <div class="nav-icon"><img src="profile.png" style="height: 21px;"></div>
+    <div>Профиль</div>
+  </div>
+</div>
 
   <script>
     const gifts = {
@@ -600,21 +592,28 @@
     }
 
     function setupEventListeners() {
-      document.getElementById('gift-modal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('gift-modal')) closeModal();
-      });
-
       document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const tab = item.dataset.tab;
-          document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          ['market', 'my-gifts', 'activity', 'profile'].forEach(t => {
-            document.getElementById(`${t}-screen`).classList.toggle('hidden', t !== tab);
-          });
-          document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
-        });
-      });
+  item.addEventListener('click', () => {
+    // Снимаем активное состояние со всех вкладок
+    document.querySelectorAll('.nav-item').forEach(i => {
+      i.classList.remove('active');
+      const img = i.querySelector('.nav-icon img');
+      img.src = i.dataset.inactive;
+    });
+
+    // Делаем текущую вкладку активной
+    item.classList.add('active');
+    const activeImg = item.querySelector('.nav-icon img');
+    activeImg.src = item.dataset.active;
+
+    // Переключаем контент
+    const tab = item.dataset.tab;
+    ['market', 'my-gifts', 'activity', 'profile'].forEach(t => {
+      document.getElementById(`${t}-screen`).classList.toggle('hidden', t !== tab);
+    });
+    document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
+  });
+});
 	  document.getElementById('modal-close').addEventListener('click', closeModal);
 
       document.querySelectorAll('[data-subtab]').forEach(tab => {
