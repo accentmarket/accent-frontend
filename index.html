@@ -522,7 +522,7 @@
     </div>
     <div class="nav-item" data-tab="profile">
       <div class="nav-icon">
-	  <img src="profile.png" style="height: 21px;">
+	  <img src="profile.png" style="height: 18px;">
 	  </div>
       <div>Профиль</div>
     </div>
@@ -615,6 +615,7 @@
           document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
         });
       });
+	  document.getElementById('modal-close').addEventListener('click', closeModal);
 
       document.querySelectorAll('[data-subtab]').forEach(tab => {
         tab.addEventListener('click', () => {
