@@ -98,6 +98,14 @@
       font-size: 12px;
       cursor: pointer;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      color: black;
+      border-color: var(--accent);
     }
     .gift-grid {
       display: grid;
@@ -203,11 +211,9 @@
       transform: translateY(100%);
       transition: transform 0.3s ease;
       z-index: 1000;
-      display: none;
     }
     .modal.open {
       transform: translateY(0);
-      display: block;
     }
     .modal-close {
       position: absolute;
@@ -367,6 +373,133 @@
       margin: 12px 0;
       line-height: 1.4;
     }
+    /* Стили для модальных окон фильтров */
+    .filter-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 350px;
+      width: 90%;
+      z-index: 2000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+    .filter-modal.open {
+      display: block;
+    }
+    .filter-item {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .filter-item.active {
+      background: rgba(255, 42, 109, 0.2);
+      border: 1px solid var(--accent);
+    }
+    .gift-icon {
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .price-filter {
+      padding: 20px 0;
+    }
+    .price-range {
+      margin: 15px 0;
+    }
+    .range-container {
+      position: relative;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin: 20px 0;
+    }
+    .range-progress {
+      position: absolute;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .range-thumb {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+    .price-inputs {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .price-input {
+      flex: 1;
+    }
+    .price-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .sort-item {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .sort-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .sort-item.active {
+      background: rgba(255, 42, 109, 0.2);
+      color: var(--accent);
+    }
+    .filter-footer {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .applied-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0;
+    }
+    .applied-filter {
+      background: rgba(255, 42, 109, 0.2);
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .remove-filter {
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .remove-filter:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -385,10 +518,22 @@
         <div class="subtab active" data-subtab="channels">Каналы</div>
         <div class="subtab" data-subtab="nft">NFT</div>
       </div>
+      
+      <!-- Примененные фильтры -->
+      <div class="applied-filters" id="applied-filters">
+        <!-- Динамически добавляются примененные фильтры -->
+      </div>
+      
       <div class="filters">
-        <div class="filter-btn">Модель</div>
-        <div class="filter-btn">Цена</div>
-        <div class="filter-btn">Сортировка</div>
+        <div class="filter-btn" id="model-filter">
+          <span>🎁</span> Модель
+        </div>
+        <div class="filter-btn" id="price-filter">
+          <span>💰</span> Цена
+        </div>
+        <div class="filter-btn" id="sort-filter">
+          <span>↕️</span> Сортировка
+        </div>
       </div>
       <div class="gift-grid" id="gift-list">
         <!-- Заполняется JS -->
@@ -526,6 +671,65 @@
     <button class="btn btn-primary" style="width: 100%;" id="submit-channel">Добавить канал</button>
   </div>
 
+  <!-- Модальное окно для фильтра "Модель" -->
+  <div class="filter-modal" id="model-modal">
+    <div class="modal-close" id="model-close">×</div>
+    <div class="modal-header">
+      <h3>Выберите подарки</h3>
+    </div>
+    <div id="model-list">
+      <!-- Динамически заполняется списком подарков -->
+    </div>
+    <div class="filter-footer">
+      <button class="btn btn-outline" id="clear-models">Очистить</button>
+      <button class="btn btn-primary" id="apply-models">Применить</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно для фильтра "Цена" -->
+  <div class="filter-modal" id="price-modal">
+    <div class="modal-close" id="price-close">×</div>
+    <div class="modal-header">
+      <h3>Цена</h3>
+    </div>
+    <div class="price-filter">
+      <div class="price-inputs">
+        <div class="price-input">
+          <label class="price-label">От (TON)</label>
+          <input type="number" class="input-control" id="min-price" min="1" max="99999" value="1">
+        </div>
+        <div class="price-input">
+          <label class="price-label">До (TON)</label>
+          <input type="number" class="input-control" id="max-price" min="1" max="99999" value="99999">
+        </div>
+      </div>
+      <div class="range-container">
+        <div class="range-progress" id="range-progress"></div>
+        <div class="range-thumb" id="min-thumb" style="left: 0%;"></div>
+        <div class="range-thumb" id="max-thumb" style="left: 100%;"></div>
+      </div>
+    </div>
+    <div class="filter-footer">
+      <button class="btn btn-outline" id="clear-prices">Сбросить</button>
+      <button class="btn btn-primary" id="apply-prices">Применить</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно для фильтра "Сортировка" -->
+  <div class="filter-modal" id="sort-modal">
+    <div class="modal-close" id="sort-close">×</div>
+    <div class="modal-header">
+      <h3>Сортировка</h3>
+    </div>
+    <div class="sort-list">
+      <div class="sort-item active" data-sort="asc">1. По возрастанию цены</div>
+      <div class="sort-item" data-sort="desc">2. По убыванию цены</div>
+    </div>
+    <div class="filter-footer">
+      <button class="btn btn-primary" id="apply-sort">Применить</button>
+    </div>
+  </div>
+
   <!-- Нижнее меню -->
   <div class="footer-nav">
     <div class="nav-item active" data-tab="market" data-inactive="https://accent-frontend.vercel.app/market-icon.png" data-active="https://accent-frontend.vercel.app/market-icon-active.png">
@@ -552,19 +756,46 @@
     let telegramId = null;
     let telegramUser = null;
     const API_BASE_URL = 'https://accent-backend.vercel.app/api';
+    
+    // Фильтры
+    let selectedModels = [];
+    let minPrice = 1;
+    let maxPrice = 99999;
+    let sortMethod = 'asc'; // 'asc' или 'desc'
 
     // Данные для демонстрации
-    const gifts = {
+    const giftsData = {
       channels: [
-        { name: "Rose", emoji: "🌹", price: 4.2, qty: 3, channel: "@rose_channel" },
-        { name: "Fire", emoji: "🔥", price: 6.8, qty: 1, channel: "@fire_channel" },
-        { name: "Crown", emoji: "👑", price: 12.0, qty: 5, channel: "@crown_channel" },
-        { name: "Star", emoji: "⭐", price: 3.5, qty: 2, channel: "@star_channel" },
+        { id: 1, name: "Rose", emoji: "🌹", price: 4.2, qty: 3, channel: "@rose_channel" },
+        { id: 2, name: "Fire", emoji: "🔥", price: 6.8, qty: 1, channel: "@fire_channel" },
+        { id: 3, name: "Crown", emoji: "👑", price: 12.0, qty: 5, channel: "@crown_channel" },
+        { id: 4, name: "Star", emoji: "⭐", price: 3.5, qty: 2, channel: "@star_channel" },
+        { id: 5, name: "Lion", emoji: "🦁", price: 8.9, qty: 1, channel: "@lion_channel" },
+        { id: 6, name: "Unicorn", emoji: "🦄", price: 15.5, qty: 2, channel: "@unicorn_channel" },
+		{ id: 6, name: "Unicorn", emoji: "🏄🏿", price: 2500, qty: 2, channel: "@surfboard_channel" },
+		{ id: 6, name: "Unicorn", emoji: "🐸", price: 14.88, qty: 7, channel: "@pepe_channel" },
+		{ id: 6, name: "Unicorn", emoji: "⚰️", price: 69, qty: 1, channel: "@grob_channel" },
+		{ id: 6, name: "Unicorn", emoji: "👺", price: 22.8, qty: 4, channel: "@mask_channel" },
       ],
       nft: [
-        { name: "Rose+", emoji: "🌹", price: 8.5 },
-        { name: "Inferno", emoji: "🔥", price: 15.0 },
-        { name: "Galaxy", emoji: "🌌", price: 22.0 },
+        { id: 7, name: "Rose+", emoji: "🌹", price: 8.5, channel: "@roseplus_channel" },
+        { id: 8, name: "Inferno", emoji: "🔥", price: 15.0, channel: "@inferno_channel" },
+        { id: 9, name: "Galaxy", emoji: "🌌", price: 22.0, channel: "@galaxy_channel" },
+        { id: 10, name: "Dragon", emoji: "🐉", price: 30.0, channel: "@dragon_channel" },
+      ],
+      allModels: [
+        { id: "rose", emoji: "🌹", name: "Rose" },
+        { id: "fire", emoji: "🔥", name: "Fire" },
+        { id: "crown", emoji: "👑", name: "Crown" },
+        { id: "star", emoji: "⭐", name: "Star" },
+        { id: "lion", emoji: "🦁", name: "Lion" },
+        { id: "unicorn", emoji: "🦄", name: "Unicorn" },
+        { id: "dragon", emoji: "🐉", name: "Dragon" },
+        { id: "galaxy", emoji: "🌌", name: "Galaxy" },
+        { id: "rainbow", emoji: "🌈", name: "Rainbow" },
+        { id: "diamond", emoji: "💎", name: "Diamond" },
+        { id: "ghost", emoji: "👻", name: "Ghost" },
+        { id: "heart", emoji: "❤️", name: "Heart" },
       ]
     };
 
@@ -597,6 +828,9 @@
       
       // Предзагружаем иконки для быстрого переключения
       preloadIcons();
+      
+      // Инициализируем фильтры
+      initFilters();
     });
 
     // Функция для предзагрузки иконок
@@ -659,9 +893,31 @@
     function renderGifts(type) {
       const container = document.getElementById('gift-list');
       container.innerHTML = '';
-      const list = gifts[type] || [];
       
-      list.forEach(item => {
+      // Фильтруем данные по типу
+      let items = type === 'channels' ? [...giftsData.channels] : [...giftsData.nft];
+      
+      // Применяем фильтры
+      if (selectedModels.length > 0) {
+        items = items.filter(item => 
+          selectedModels.some(model => model.name.toLowerCase() === item.name.toLowerCase())
+        );
+      }
+      
+      // Фильтр по цене
+      items = items.filter(item => item.price >= minPrice && item.price <= maxPrice);
+      
+      // Сортировка
+      items.sort((a, b) => {
+        if (sortMethod === 'asc') {
+          return a.price - b.price;
+        } else {
+          return b.price - a.price;
+        }
+      });
+      
+      // Рендерим карточки
+      items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'gift-card';
         card.innerHTML = `
@@ -673,6 +929,9 @@
         card.addEventListener('click', () => openGiftModal(item, type));
         container.appendChild(card);
       });
+      
+      // Обновляем отображение примененных фильтров
+      updateAppliedFilters();
     }
 
     // Функция для открытия модального окна подарка
@@ -755,7 +1014,6 @@
         if (response.ok) {
           alert('✅ Канал успешно добавлен!');
           closeAddChannelModal();
-          // Здесь можно обновить список каналов
         } else {
           const error = await response.json();
           alert(`❌ Ошибка: ${error.detail || 'Не удалось добавить канал'}`);
@@ -904,16 +1162,288 @@
         }
       });
       
-      // Фильтры
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          alert(`Фильтр: ${btn.textContent}`);
-        });
-      });
-      
       // Пополнение баланса
       document.getElementById('replenish-btn').addEventListener('click', openReplenishModal);
       document.getElementById('header-balance').addEventListener('click', openReplenishModal);
+    }
+
+    // ===================
+    // ФУНКЦИИ ДЛЯ ФИЛЬТРОВ
+    // ===================
+
+    function initFilters() {
+      // Открываем модальное окно для фильтра "Модель"
+      document.getElementById('model-filter').addEventListener('click', () => {
+        renderModelList();
+        document.getElementById('model-modal').classList.add('open');
+      });
+      
+      // Закрываем модальное окно для фильтра "Модель"
+      document.getElementById('model-close').addEventListener('click', () => {
+        document.getElementById('model-modal').classList.remove('open');
+      });
+      
+      // Открываем модальное окно для фильтра "Цена"
+      document.getElementById('price-filter').addEventListener('click', () => {
+        // Устанавливаем текущие значения в поля ввода
+        document.getElementById('min-price').value = minPrice;
+        document.getElementById('max-price').value = maxPrice;
+        updateRangeSlider();
+        document.getElementById('price-modal').classList.add('open');
+      });
+      
+      // Закрываем модальное окно для фильтра "Цена"
+      document.getElementById('price-close').addEventListener('click', () => {
+        document.getElementById('price-modal').classList.remove('open');
+      });
+      
+      // Открываем модальное окно для фильтра "Сортировка"
+      document.getElementById('sort-filter').addEventListener('click', () => {
+        // Устанавливаем текущую сортировку
+        document.querySelectorAll('.sort-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        document.querySelector(`.sort-item[data-sort="${sortMethod}"]`).classList.add('active');
+        document.getElementById('sort-modal').classList.add('open');
+      });
+      
+      // Закрываем модальное окно для фильтра "Сортировка"
+      document.getElementById('sort-close').addEventListener('click', () => {
+        document.getElementById('sort-modal').classList.remove('open');
+      });
+      
+      // Применяем выбранные модели
+      document.getElementById('apply-models').addEventListener('click', () => {
+        document.getElementById('model-modal').classList.remove('open');
+        renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+      });
+      
+      // Сбрасываем выбранные модели
+      document.getElementById('clear-models').addEventListener('click', () => {
+        selectedModels = [];
+        document.querySelectorAll('.filter-item').forEach(item => {
+          item.classList.remove('active');
+        });
+      });
+      
+      // Применяем выбранный диапазон цен
+      document.getElementById('apply-prices').addEventListener('click', () => {
+        minPrice = parseInt(document.getElementById('min-price').value) || 1;
+        maxPrice = parseInt(document.getElementById('max-price').value) || 99999;
+        
+        // Ограничиваем значения
+        minPrice = Math.max(1, Math.min(minPrice, 99999));
+        maxPrice = Math.max(1, Math.min(maxPrice, 99999));
+        
+        if (minPrice > maxPrice) {
+          [minPrice, maxPrice] = [maxPrice, minPrice];
+        }
+        
+        document.getElementById('price-modal').classList.remove('open');
+        renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+      });
+      
+      // Сбрасываем цены
+      document.getElementById('clear-prices').addEventListener('click', () => {
+        minPrice = 1;
+        maxPrice = 99999;
+        document.getElementById('min-price').value = minPrice;
+        document.getElementById('max-price').value = maxPrice;
+        updateRangeSlider();
+      });
+      
+      // Применяем сортировку
+      document.getElementById('apply-sort').addEventListener('click', () => {
+        document.getElementById('sort-modal').classList.remove('open');
+        renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+      });
+      
+      // Выбор сортировки
+      document.querySelectorAll('.sort-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          sortMethod = item.dataset.sort;
+        });
+      });
+      
+      // Обработка клика по чекбоксам моделей
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-item') || e.target.closest('.filter-item')) {
+          const item = e.target.closest('.filter-item');
+          const modelId = item.dataset.model;
+          const model = giftsData.allModels.find(m => m.id === modelId);
+          
+          if (item.classList.contains('active')) {
+            item.classList.remove('active');
+            selectedModels = selectedModels.filter(m => m.id !== modelId);
+          } else {
+            item.classList.add('active');
+            selectedModels.push(model);
+          }
+        }
+      });
+      
+      // Обработка ввода цены
+      document.getElementById('min-price').addEventListener('input', (e) => {
+        let value = parseInt(e.target.value) || 1;
+        value = Math.max(1, Math.min(value, maxPrice));
+        e.target.value = value;
+        minPrice = value;
+        updateRangeSlider();
+      });
+      
+      document.getElementById('max-price').addEventListener('input', (e) => {
+        let value = parseInt(e.target.value) || 99999;
+        value = Math.max(minPrice, Math.min(value, 99999));
+        e.target.value = value;
+        maxPrice = value;
+        updateRangeSlider();
+      });
+      
+      // Инициализируем слайдер
+      initRangeSlider();
+    }
+
+    // Рендерим список моделей для фильтра
+    function renderModelList() {
+      const container = document.getElementById('model-list');
+      container.innerHTML = '';
+      
+      giftsData.allModels.forEach(model => {
+        const isActive = selectedModels.some(m => m.id === model.id);
+        
+        const item = document.createElement('div');
+        item.className = `filter-item ${isActive ? 'active' : ''}`;
+        item.dataset.model = model.id;
+        item.innerHTML = `
+          <div class="gift-icon">${model.emoji}</div>
+          <div>${model.name}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Инициализируем слайдер диапазона цен
+    function initRangeSlider() {
+      const rangeContainer = document.querySelector('.range-container');
+      const minThumb = document.getElementById('min-thumb');
+      const maxThumb = document.getElementById('max-thumb');
+      const rangeProgress = document.getElementById('range-progress');
+      
+      // Устанавливаем начальные позиции
+      updateRangeSlider();
+      
+      // Логика перетаскивания минимума
+      let isDraggingMin = false;
+      let isDraggingMax = false;
+      
+      minThumb.addEventListener('mousedown', () => {
+        isDraggingMin = true;
+      });
+      
+      maxThumb.addEventListener('mousedown', () => {
+        isDraggingMax = true;
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (!isDraggingMin && !isDraggingMax) return;
+        
+        const rect = rangeContainer.getBoundingClientRect();
+        const position = (e.clientX - rect.left) / rect.width;
+        const value = Math.round(1 + position * 99998);
+        
+        if (isDraggingMin) {
+          minPrice = Math.max(1, Math.min(value, maxPrice));
+          document.getElementById('min-price').value = minPrice;
+          updateRangeSlider();
+        } else if (isDraggingMax) {
+          maxPrice = Math.max(minPrice, Math.min(value, 99999));
+          document.getElementById('max-price').value = maxPrice;
+          updateRangeSlider();
+        }
+      });
+      
+      document.addEventListener('mouseup', () => {
+        isDraggingMin = false;
+        isDraggingMax = false;
+      });
+    }
+
+    // Обновляем позиции слайдера
+    function updateRangeSlider() {
+      const rangeProgress = document.getElementById('range-progress');
+      const minThumb = document.getElementById('min-thumb');
+      const maxThumb = document.getElementById('max-thumb');
+      
+      const minPercent = ((minPrice - 1) / 99998) * 100;
+      const maxPercent = ((maxPrice - 1) / 99998) * 100;
+      
+      rangeProgress.style.left = `${minPercent}%`;
+      rangeProgress.style.width = `${maxPercent - minPercent}%`;
+      
+      minThumb.style.left = `${minPercent}%`;
+      maxThumb.style.left = `${maxPercent}%`;
+    }
+
+    // Обновляем отображение примененных фильтров
+    function updateAppliedFilters() {
+      const container = document.getElementById('applied-filters');
+      container.innerHTML = '';
+      
+      // Фильтр по моделям
+      selectedModels.forEach(model => {
+        const filter = document.createElement('div');
+        filter.className = 'applied-filter';
+        filter.innerHTML = `
+          <span>${model.emoji}</span>
+          ${model.name}
+          <span class="remove-filter" data-model="${model.id}">×</span>
+        `;
+        container.appendChild(filter);
+      });
+      
+      // Фильтр по цене
+      if (minPrice > 1 || maxPrice < 99999) {
+        const filter = document.createElement('div');
+        filter.className = 'applied-filter';
+        filter.innerHTML = `
+          💰 ${minPrice} - ${maxPrice} TON
+          <span class="remove-filter" data-filter="price">×</span>
+        `;
+        container.appendChild(filter);
+      }
+      
+      // Сортировка
+      if (sortMethod !== 'asc') {
+        const filter = document.createElement('div');
+        filter.className = 'applied-filter';
+        filter.innerHTML = `
+          ↕️ По убыванию
+          <span class="remove-filter" data-filter="sort">×</span>
+        `;
+        container.appendChild(filter);
+      }
+      
+      // Обработчики для удаления фильтров
+      document.querySelectorAll('.remove-filter').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const filterType = btn.dataset.filter;
+          const modelId = btn.dataset.model;
+          
+          if (filterType === 'price') {
+            minPrice = 1;
+            maxPrice = 99999;
+          } else if (filterType === 'sort') {
+            sortMethod = 'asc';
+          } else if (modelId) {
+            selectedModels = selectedModels.filter(m => m.id !== modelId);
+          }
+          
+          renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+        });
+      });
     }
   </script>
 </body>
