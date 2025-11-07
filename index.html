@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Accent — Market of Telegram Gifts</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preload" href="https://accent-frontend.vercel.app/accent-logo.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/close-icon.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/market-icon-active.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/gift-icon.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/activity.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/profile.png" as="image">
   <style>
     :root {
       --bg: #0a011a;
@@ -52,6 +58,7 @@
       gap: 6px;
       font-weight: 600;
       color: white;
+      cursor: pointer;
     }
     .subtabs {
       display: flex;
@@ -298,7 +305,8 @@
     .fab.hidden {
       display: none;
     }
-    .add-channel-modal {
+    /* Модальное окно для пополнения баланса */
+    .replenish-modal {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -313,7 +321,7 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    .add-channel-modal.open {
+    .replenish-modal.open {
       opacity: 1;
     }
     .input-group {
@@ -334,6 +342,25 @@
       color: white;
       font-family: inherit;
     }
+    /* Модальное окно для добавления канала */
+    .add-channel-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 350px;
+      width: 90%;
+      z-index: 2000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .add-channel-modal.open {
+      opacity: 1;
+    }
     .warning {
       font-size: 12px;
       color: #FFA500;
@@ -346,9 +373,9 @@
   <!-- Шапка -->
   <div class="header">
     <div class="logo">
-      <img src="https://accent-frontend.vercel.app/accent-logo.png" style="height: 32px; margin-right: 8px;">
+      <img src="https://accent-frontend.vercel.app/accent-logo.png" style="height: 32px; margin-right: 8px;" alt="Accent Logo">
     </div>
-    <div class="balance" id="header-balance">Загрузка...</div>
+    <div class="balance" id="header-balance">+ 0.00 TON</div>
   </div>
 
   <div class="content" id="main-content">
@@ -364,7 +391,7 @@
         <div class="filter-btn">Сортировка</div>
       </div>
       <div class="gift-grid" id="gift-list">
-        <!-- Заполняется динамически -->
+        <!-- Заполняется JS -->
       </div>
     </div>
 
@@ -399,6 +426,7 @@
           </div>
         </div>
       </div>
+
       <div id="purchases-content" class="hidden">
         <div class="list-item">
           <div class="list-header">
@@ -438,7 +466,7 @@
         <div style="width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">I</div>
         <h3 id="user-name">Загрузка...</h3>
         <p id="user-username">@loading</p>
-        <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">Загрузка...</div>
+        <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">0.00 TON</div>
         <button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
       </div>
     </div>
@@ -448,22 +476,37 @@
 
   <!-- Модальное окно для подарка -->
   <div class="modal" id="gift-modal">
-    <div class="modal-close" id="modal-close">
-        <img src="https://accent-frontend.vercel.app/close-icon.png" style="width: 12px; height: 12px;" alt="Close">
-    </div>
+    <div class="modal-close" id="modal-close">×</div>
     <div class="modal-header">
       <div><span id="modal-emoji"></span> <span id="modal-name"></span></div>
       <div class="gift-price" id="modal-price"></div>
       <div class="gift-qty" id="modal-qty"></div>
     </div>
     <div class="modal-btns" id="modal-buttons">
-      <!-- Заполняется динамически -->
+      <!-- Заполняется JS -->
     </div>
+  </div>
+
+  <!-- Модальное окно для пополнения баланса -->
+  <div class="replenish-modal" id="replenish-modal">
+    <div class="modal-close" id="replenish-close">×</div>
+    <div class="modal-header">
+      <h3>Пополнение баланса</h3>
+    </div>
+    <div class="instructions">
+      <p>1. Подключите TON-кошелек к маркету</p>
+      <p>2. Введите сумму для пополнения</p>
+    </div>
+    <div class="input-group">
+      <label for="replenish-amount">Сумма в TON</label>
+      <input type="number" class="input-control" id="replenish-amount" placeholder="0.0" min="0.1" step="0.1">
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" id="confirm-replenish">Пополнить баланс</button>
   </div>
 
   <!-- Модальное окно для добавления канала -->
   <div class="add-channel-modal" id="add-channel-modal">
-    <div class="modal-close" id="add-channel-close">✕</div>
+    <div class="modal-close" id="add-channel-close">×</div>
     <div class="modal-header">
       <h3>Добавить канал</h3>
     </div>
@@ -486,26 +529,26 @@
   <!-- Нижнее меню -->
   <div class="footer-nav">
     <div class="nav-item active" data-tab="market" data-inactive="https://accent-frontend.vercel.app/market-icon.png" data-active="https://accent-frontend.vercel.app/market-icon-active.png">
-      <div class="nav-icon"><img src="https://your-vercel-url.vercel.app/market-icon-active.png"></div>
+      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/market-icon-active.png" alt="Маркет"></div>
       <div>Маркет</div>
     </div>
     <div class="nav-item" data-tab="my-gifts" data-inactive="https://accent-frontend.vercel.app/gift-icon.png" data-active="https://accent-frontend.vercel.app/gift-icon-active.png">
-      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/gift-icon.png"></div>
+      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/gift-icon.png" alt="Мои подарки"></div>
       <div>Мои подарки</div>
     </div>
     <div class="nav-item" data-tab="activity" data-inactive="https://accent-frontend.vercel.app/activity.png" data-active="https://accent-frontend.vercel.app/activity-active.png">
-      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/activity.png"></div>
+      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/activity.png" alt="Активность"></div>
       <div>Активность</div>
     </div>
     <div class="nav-item" data-tab="profile" data-inactive="https://accent-frontend.vercel.app/profile.png" data-active="https://accent-frontend.vercel.app/profile-active.png">
-      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/profile.png"></div>
+      <div class="nav-icon"><img src="https://accent-frontend.vercel.app/profile.png" alt="Профиль"></div>
       <div>Профиль</div>
     </div>
   </div>
 
   <script>
     // Глобальные переменные
-    let userBalance = 0;
+    let userBalance = 0.00;
     let telegramId = null;
     let telegramUser = null;
     const API_BASE_URL = 'https://accent-backend.vercel.app/api';
@@ -527,7 +570,7 @@
 
     // Инициализация приложения
     document.addEventListener('DOMContentLoaded', () => {
-      // Инициализация Telegram WebApp
+      // Быстрая инициализация Telegram WebApp
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
@@ -535,7 +578,7 @@
         // Получаем данные пользователя
         if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
           telegramUser = Telegram.WebApp.initDataUnsafe.user;
-          telegramId = telegramUser.id;
+          telegramId = parseInt(telegramUser.id);
           
           // Обновляем профиль
           document.getElementById('user-name').textContent = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'Пользователь';
@@ -543,7 +586,7 @@
         }
       }
       
-      // Рендерим подарки
+      // Быстрый рендер подарков
       renderGifts('channels');
       
       // Настраиваем обработчики событий
@@ -551,7 +594,29 @@
       
       // Загружаем баланс пользователя
       fetchUserBalance();
+      
+      // Предзагружаем иконки для быстрого переключения
+      preloadIcons();
     });
+
+    // Функция для предзагрузки иконок
+    function preloadIcons() {
+      const icons = [
+        'https://accent-frontend.vercel.app/market-icon.png',
+        'https://accent-frontend.vercel.app/market-icon-active.png',
+        'https://accent-frontend.vercel.app/gift-icon.png',
+        'https://accent-frontend.vercel.app/gift-icon-active.png',
+        'https://accent-frontend.vercel.app/activity.png',
+        'https://accent-frontend.vercel.app/activity-active.png',
+        'https://accent-frontend.vercel.app/profile.png',
+        'https://accent-frontend.vercel.app/profile-active.png'
+      ];
+      
+      icons.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
 
     // Функция для получения баланса пользователя
     async function fetchUserBalance() {
@@ -561,16 +626,16 @@
         const response = await fetch(`${API_BASE_URL}/user?telegram_id=${telegramId}`);
         if (response.ok) {
           const data = await response.json();
-          userBalance = data.balance || 0;
+          userBalance = parseFloat(data.balance) || 0.00;
           updateBalanceDisplay();
         } else {
           console.error('Не удалось загрузить баланс');
-          userBalance = 0;
+          userBalance = 0.00;
           updateBalanceDisplay();
         }
       } catch (error) {
         console.error('Ошибка при получении баланса:', error);
-        userBalance = 0;
+        userBalance = 0.00;
         updateBalanceDisplay();
       }
     }
@@ -701,20 +766,89 @@
       }
     }
 
+    // Функция для открытия модального окна пополнения баланса
+    function openReplenishModal() {
+      document.getElementById('replenish-modal').classList.add('open');
+    }
+
+    // Функция для закрытия модального окна пополнения баланса
+    function closeReplenishModal() {
+      document.getElementById('replenish-modal').classList.remove('open');
+    }
+
+    // Функция для пополнения баланса
+    async function replenishBalance() {
+      const amountStr = document.getElementById('replenish-amount').value.trim();
+      const amount = parseFloat(amountStr);
+      
+      if (isNaN(amount) || amount < 0.1) {
+        alert('Пожалуйста, введите корректную сумму (минимум 0.1 TON)');
+        return;
+      }
+      
+      if (!telegramId) {
+        alert('Ошибка авторизации. Пожалуйста, перезагрузите приложение.');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/payments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telegram_id: telegramId,
+            amount: amount
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.payment_link) {
+            Telegram.WebApp.openTelegramLink(data.payment_link);
+            closeReplenishModal();
+            alert('✅ Перевод успешно инициирован! После подтверждения баланс обновится.');
+          } else {
+            alert('✅ Запрос на пополнение успешно создан. Пожалуйста, следуйте инструкциям в кошельке.');
+            closeReplenishModal();
+          }
+        } else {
+          const error = await response.json();
+          alert(`❌ Ошибка: ${error.detail || 'Не удалось создать платеж'}`);
+        }
+      } catch (error) {
+        console.error('Ошибка при создании платежа:', error);
+        alert('⚠️ Не удалось подключиться к серверу');
+      }
+    }
+
     // Функция для настройки обработчиков событий
     function setupEventListeners() {
       // Закрытие модального окна подарка
       document.getElementById('modal-close').addEventListener('click', closeGiftModal);
+      document.getElementById('gift-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('gift-modal')) {
+          closeGiftModal();
+        }
+      });
       
-      // Закрытие модального окна добавления канала
+      // Закрытие модального окна для пополнения
+      document.getElementById('replenish-close').addEventListener('click', closeReplenishModal);
+      document.getElementById('replenish-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('replenish-modal')) {
+          closeReplenishModal();
+        }
+      });
+      
+      // Закрытие модального окна для добавления канала
       document.getElementById('add-channel-close').addEventListener('click', closeAddChannelModal);
-      
-      // Нажатие на затемненную область модального окна добавления канала
       document.getElementById('add-channel-modal').addEventListener('click', (e) => {
         if (e.target === document.getElementById('add-channel-modal')) {
           closeAddChannelModal();
         }
       });
+      
+      // Кнопка подтверждения пополнения
+      document.getElementById('confirm-replenish').addEventListener('click', replenishBalance);
       
       // Кнопка добавления канала
       document.getElementById('submit-channel').addEventListener('click', addChannel);
@@ -773,14 +907,40 @@
       });
       
       // Пополнение баланса
-      document.getElementById('replenish-btn').addEventListener('click', () => {
-        alert('Пополнение баланса будет реализовано в следующей версии.');
-      });
+      document.getElementById('replenish-btn').addEventListener('click', openReplenishModal);
+      document.getElementById('header-balance').addEventListener('click', openReplenishModal);
+    }
+  </script>
+
+  <script>
+    // Функция для отправки ордера на бэкенд
+    async function createOrder(orderData) {
+      if (!telegramId) {
+        alert('Ошибка авторизации. Пожалуйста, перезагрузите приложение.');
+        return;
+      }
       
-      // Клик по балансу в шапке
-      document.getElementById('header-balance').addEventListener('click', () => {
-        document.querySelector('.nav-item[data-tab="profile"]').click();
-      });
+      try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            telegram_id: telegramId,
+            order: orderData 
+          })
+        });
+        
+        if (response.ok) {
+          alert('✅ Ордер выставлен!');
+          // Здесь можно обновить список "Мои подарки"
+        } else {
+          const error = await response.json();
+          alert('❌ Ошибка: ' + (error.detail || 'Неизвестная ошибка'));
+        }
+      } catch (err) {
+        console.error('Ошибка при отправке ордера:', err);
+        alert('⚠️ Не удалось подключиться к серверу');
+      }
     }
   </script>
 </body>
