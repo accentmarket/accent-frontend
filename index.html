@@ -203,9 +203,11 @@
       transform: translateY(100%);
       transition: transform 0.3s ease;
       z-index: 1000;
+      display: none;
     }
     .modal.open {
       transform: translateY(0);
+      display: block;
     }
     .modal-close {
       position: absolute;
@@ -318,11 +320,10 @@
       width: 90%;
       z-index: 2000;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      display: none;
     }
     .replenish-modal.open {
-      opacity: 1;
+      display: block;
     }
     .input-group {
       margin: 16px 0;
@@ -355,11 +356,10 @@
       width: 90%;
       z-index: 2000;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      display: none;
     }
     .add-channel-modal.open {
-      opacity: 1;
+      display: block;
     }
     .warning {
       font-size: 12px;
@@ -570,7 +570,7 @@
 
     // Инициализация приложения
     document.addEventListener('DOMContentLoaded', () => {
-      // Быстрая инициализация Telegram WebApp
+      // Инициализация Telegram WebApp
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
@@ -586,7 +586,7 @@
         }
       }
       
-      // Быстрый рендер подарков
+      // Рендерим подарки
       renderGifts('channels');
       
       // Настраиваем обработчики событий
@@ -896,8 +896,13 @@
         });
       });
       
-      // Кнопка FAB (добавление канала)
-      document.getElementById('fab-btn').addEventListener('click', openAddChannelModal);
+      // Кнопка FAB (добавление канала) - работает ТОЛЬКО на вкладке "Мои подарки"
+      document.getElementById('fab-btn').addEventListener('click', () => {
+        // Проверяем, что мы находимся на вкладке "Мои подарки"
+        if (!document.getElementById('my-gifts-screen').classList.contains('hidden')) {
+          openAddChannelModal();
+        }
+      });
       
       // Фильтры
       document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -909,38 +914,6 @@
       // Пополнение баланса
       document.getElementById('replenish-btn').addEventListener('click', openReplenishModal);
       document.getElementById('header-balance').addEventListener('click', openReplenishModal);
-    }
-  </script>
-
-  <script>
-    // Функция для отправки ордера на бэкенд
-    async function createOrder(orderData) {
-      if (!telegramId) {
-        alert('Ошибка авторизации. Пожалуйста, перезагрузите приложение.');
-        return;
-      }
-      
-      try {
-        const response = await fetch(`${API_BASE_URL}/orders`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            telegram_id: telegramId,
-            order: orderData 
-          })
-        });
-        
-        if (response.ok) {
-          alert('✅ Ордер выставлен!');
-          // Здесь можно обновить список "Мои подарки"
-        } else {
-          const error = await response.json();
-          alert('❌ Ошибка: ' + (error.detail || 'Неизвестная ошибка'));
-        }
-      } catch (err) {
-        console.error('Ошибка при отправке ордера:', err);
-        alert('⚠️ Не удалось подключиться к серверу');
-      }
     }
   </script>
 </body>
