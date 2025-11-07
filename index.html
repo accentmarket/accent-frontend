@@ -500,6 +500,29 @@
     .remove-filter:hover {
       opacity: 1;
     }
+	html, body {
+  height: 100%;
+  overflow: hidden;
+}
+.content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal, .add-channel-modal, .replenish-modal, .filter-modal {
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-height: 600px) {
+  .modal, .add-channel-modal, .replenish-modal, .filter-modal {
+    max-height: 70vh;
+  }
+}
+@media (max-width: 360px) {
+  .filters {
+    flex-direction: column;
+  }
+}
   </style>
 </head>
 <body>
@@ -1446,6 +1469,29 @@
         });
       });
     }
+	function adjustContentHeight() {
+  const header = document.querySelector('.header');
+  const footer = document.querySelector('.footer-nav');
+  const content = document.querySelector('.content');
+  
+  if (header && footer && content) {
+    const headerHeight = header.offsetHeight;
+    const footerHeight = footer.offsetHeight;
+    const newHeight = window.innerHeight - (headerHeight + footerHeight);
+    content.style.height = `${newHeight}px`;
+  }
+}
+
+// Вызываем при загрузке и при изменении размера окна
+window.addEventListener('load', adjustContentHeight);
+window.addEventListener('resize', adjustContentHeight);
+
+// Для Telegram Mini Apps
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+  Telegram.WebApp.onEvent('viewportChanged', adjustContentHeight);
+}
   </script>
 </body>
 </html>
