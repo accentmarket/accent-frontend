@@ -930,6 +930,12 @@
     // Инициализация TON Connect
     function initTonConnect() {
       try {
+        // Проверяем, загружена ли библиотека TON Connect
+        if (typeof TON_CONNECT_UI === 'undefined') {
+          console.error('TON Connect UI не загружен');
+          return;
+        }
+        
         // Создаем манифест для TON Connect
         const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
         
@@ -937,7 +943,7 @@
         tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
           manifestUrl: manifestUrl,
           actionsConfiguration: {
-            twaReturnUrl: 'https://t.me/accentmarketbot' // Замените на username вашего бота
+            twaReturnUrl: 'https://t.me/accentmarketbot'
           }
         });
         
@@ -1059,134 +1065,107 @@
     }
 
     // Функция для пополнения баланса через TON
-    // Функция для пополнения баланса через TON
-async function replenishWithTon() {
-  console.log('=== START REPLENISH PROCESS ===');
-  
-  if (!isTonConnected || !wallet) {
-    console.log('Кошелек не подключен, открываем модальное окно');
-    openTonConnectModal();
-    return;
-  }
-  
-  const amountStr = document.getElementById('replenish-amount').value.trim();
-  const amount = parseFloat(amountStr);
-  
-  console.log('Введенная сумма:', amount);
-  
-  if (isNaN(amount) || amount < 0.1) {
-    alert('Пожалуйста, введите корректную сумму (минимум 0.1 TON)');
-    return;
-  }
-  
-  try {
-    // Ваш кошелек в правильном формате
-    const marketWalletAddress = "UQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6";
-    
-    // Создаем транзакцию для пополнения
-    const transaction = {
-      validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
-      messages: [
-        {
-          address: marketWalletAddress,
-          amount: (amount * 1000000000).toString(), // Конвертируем в наноTON
-          // payload: "" // Пока не используем payload для простоты
-        }
-      ]
-    };
-    
-    console.log('Создана транзакция:', transaction);
-    console.log('Отправляем на адрес:', marketWalletAddress);
-    console.log('Сумма:', amount, 'TON', '(', (amount * 1000000000), 'наноTON)');
-    
-    // Проверяем баланс пользователя перед отправкой
-    try {
-      const userBalance = await wallet.provider.getBalance(wallet.account.address);
-      const userBalanceTON = parseFloat(userBalance) / 1000000000;
-      console.log('Баланс пользователя:', userBalanceTON, 'TON');
+    async function replenishWithTon() {
+      console.log('=== START REPLENISH PROCESS ===');
       
-      if (userBalanceTON < amount + 0.1) { // +0.1 TON для комиссии
-        alert(`Недостаточно средств на кошельке. Нужно: ${amount} TON + комиссия. Доступно: ${userBalanceTON.toFixed(2)} TON`);
+      if (!isTonConnected || !wallet) {
+        console.log('Кошелек не подключен, открываем модальное окно');
+        openTonConnectModal();
         return;
       }
-    } catch (balanceError) {
-      console.warn('Не удалось проверить баланс:', balanceError);
+      
+      const amountStr = document.getElementById('replenish-amount').value.trim();
+      const amount = parseFloat(amountStr);
+      
+      console.log('Введенная сумма:', amount);
+      
+      if (isNaN(amount) || amount < 0.1) {
+        alert('Пожалуйста, введите корректную сумму (минимум 0.1 TON)');
+        return;
+      }
+      
+      try {
+        // Правильный адрес кошелька в формате EQ
+        const marketWalletAddress = "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6";
+        
+        // Создаем транзакцию для пополнения
+        const transaction = {
+          validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
+          messages: [
+            {
+              address: marketWalletAddress,
+              amount: (amount * 1000000000).toString(), // Конвертируем в наноTON
+            }
+          ]
+        };
+        
+        console.log('Создана транзакция:', transaction);
+        console.log('Отправляем на адрес:', marketWalletAddress);
+        console.log('Сумма:', amount, 'TON', '(', (amount * 1000000000), 'наноTON)');
+        
+        // Проверяем баланс пользователя перед отправкой
+        try {
+          const userBalance = await wallet.provider.getBalance(wallet.account.address);
+          const userBalanceTON = parseFloat(userBalance) / 1000000000;
+          console.log('Баланс пользователя:', userBalanceTON, 'TON');
+          
+          if (userBalanceTON < amount + 0.1) { // +0.1 TON для комиссии
+            alert(`Недостаточно средств на кошельке. Нужно: ${amount} TON + комиссия. Доступно: ${userBalanceTON.toFixed(2)} TON`);
+            return;
+          }
+        } catch (balanceError) {
+          console.warn('Не удалось проверить баланс:', balanceError);
+        }
+        
+        // Отправляем транзакцию
+        console.log('Отправляем транзакцию...');
+        const result = await tonConnectUI.sendTransaction(transaction);
+        
+        // Транзакция отправлена успешно
+        console.log('✅ Транзакция отправлена успешно:', result);
+        
+        // Закрываем модальное окно
+        closeReplenishModal();
+        
+        // Показываем уведомление об успехе
+        alert(`✅ Транзакция отправлена! ${amount} TON будут зачислены после подтверждения в блокчейне.`);
+        
+        // Отправляем данные о транзакции на бэкенд
+        if (telegramId) {
+          console.log('Отправляем данные о транзакции на бэкенд...');
+          await sendTransactionToBackend(telegramId, amount, result.boc, marketWalletAddress);
+        }
+        
+      } catch (error) {
+        console.error('❌ Ошибка при отправке транзакции:', error);
+        console.error('Детали ошибки:', {
+          name: error.name,
+          message: error.message,
+          code: error.code,
+          data: error.data
+        });
+        
+        // Более детальные сообщения об ошибках
+        if (error.code === 400) {
+          alert('Транзакция отменена пользователем');
+        } else if (error.message?.includes('Rejected') || error.message?.includes('rejected')) {
+          alert('Транзакция отклонена пользователем в кошельке');
+        } else if (error.message?.includes('Insufficient balance')) {
+          alert('Недостаточно средств на кошельке для выполнения транзакции');
+        } else if (error.message?.includes('Invalid address')) {
+          alert('Неверный адрес получателя');
+        } else if (error.message?.includes('User not authorized')) {
+          alert('Кошелек не авторизован. Пожалуйста, подключите кошелек заново.');
+        } else {
+          alert('Ошибка при отправке транзакции: ' + (error.message || 'Неизвестная ошибка'));
+        }
+      }
+      
+      console.log('=== END REPLENISH PROCESS ===');
     }
-    
-    // Отправляем транзакцию
-    console.log('Отправляем транзакцию...');
-    const result = await tonConnectUI.sendTransaction(transaction);
-    
-    // Транзакция отправлена успешно
-    console.log('✅ Транзакция отправлена успешно:', result);
-    
-    // Закрываем модальное окно
-    closeReplenishModal();
-    
-    // Показываем уведомление об успехе
-    alert(`✅ Транзакция отправлена! ${amount} TON будут зачислены после подтверждения в блокчейне.`);
-    
-    // Отправляем данные о транзакции на бэкенд
-    if (telegramId) {
-      console.log('Отправляем данные о транзакции на бэкенд...');
-      await sendTransactionToBackend(telegramId, amount, result.boc, marketWalletAddress);
-    }
-    
-  } catch (error) {
-    console.error('❌ Ошибка при отправке транзакции:', error);
-    console.error('Детали ошибки:', {
-      name: error.name,
-      message: error.message,
-      code: error.code,
-      data: error.data
-    });
-    
-    // Более детальные сообщения об ошибках
-    if (error.code === 400) {
-      alert('Транзакция отменена пользователем');
-    } else if (error.message?.includes('Rejected') || error.message?.includes('rejected')) {
-      alert('Транзакция отклонена пользователем в кошельке');
-    } else if (error.message?.includes('Insufficient balance')) {
-      alert('Недостаточно средств на кошельке для выполнения транзакции');
-    } else if (error.message?.includes('Invalid address')) {
-      alert('Неверный адрес получателя');
-    } else if (error.message?.includes('User not authorized')) {
-      alert('Кошелек не авторизован. Пожалуйста, подключите кошелек заново.');
-    } else {
-      alert('Ошибка при отправке транзакции: ' + (error.message || 'Неизвестная ошибка'));
-    }
-  }
-  
-  console.log('=== END REPLENISH PROCESS ===');
-}
 
-// Обновленная функция отправки на бэкенд
-	async function sendTransactionToBackend(telegramId, amount, boc, toAddress) {
-	  try {
-		const response = await fetch(`${API_BASE_URL}/transactions`, {
-		  method: 'POST',
-		  headers: { 'Content-Type': 'application/json' },
-		  body: JSON.stringify({
-			telegram_id: telegramId,
-			amount: amount,
-			transaction_boc: boc,
-			to_address: toAddress,
-			status: 'pending',
-			timestamp: new Date().toISOString()
-		  })
-		});
-		
-		if (response.ok) {
-		  console.log('✅ Данные транзакции сохранены на бэкенде');
-		} else {
-		  console.error('❌ Ошибка при сохранении транзакции на бэкенде');
-		}
-	  } catch (error) {
-		console.error('❌ Ошибка при отправке транзакции на бэкенд:', error);
-	  }
-	}
     // Отправка данных о транзакции на бэкенд
-    async function sendTransactionToBackend(telegramId, amount, boc) {
+    async function sendTransactionToBackend(telegramId, amount, boc, toAddress) {
       try {
         const response = await fetch(`${API_BASE_URL}/transactions`, {
           method: 'POST',
@@ -1195,15 +1174,19 @@ async function replenishWithTon() {
             telegram_id: telegramId,
             amount: amount,
             transaction_boc: boc,
-            status: 'pending'
+            to_address: toAddress,
+            status: 'pending',
+            timestamp: new Date().toISOString()
           })
         });
         
-        if (!response.ok) {
-          console.error('Ошибка при сохранении транзакции');
+        if (response.ok) {
+          console.log('✅ Данные транзакции сохранены на бэкенде');
+        } else {
+          console.error('❌ Ошибка при сохранении транзакции на бэкенде');
         }
       } catch (error) {
-        console.error('Ошибка при отправке транзакции на бэкенд:', error);
+        console.error('❌ Ошибка при отправке транзакции на бэкенд:', error);
       }
     }
 
@@ -1401,39 +1384,39 @@ async function replenishWithTon() {
     }
 
     // Функция для открытия модального окна пополнения баланса
-	function openReplenishModal() {
-	  // Очищаем поле ввода
-	  document.getElementById('replenish-amount').value = '';
-	  
-	  // Обновляем инструкции в зависимости от состояния кошелька
-	  const instructions = document.getElementById('replenish-instructions');
-	  if (instructions) {
-		if (isTonConnected) {
-		  instructions.innerHTML = `
-			<p><strong>Ваш TON кошелек подключен:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-			  ${wallet.account.address}
-			</p>
-			<p><strong>Пополнение на адрес маркета:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-			  UQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
-			</p>
-			<p>Введите сумму для пополнения баланса (минимум 0.1 TON)</p>
-		  `;
-		} else {
-		  instructions.innerHTML = `
-			<p>Для пополнения баланса необходимо подключить TON кошелек</p>
-			<p>После подключения кошелька вы сможете пополнить баланс напрямую через блокчейн</p>
-			<p><strong>Адрес маркета для пополнения:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px;">
-			  UQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
-			</p>
-		  `;
-		}
-	  }
-	  
-	  document.getElementById('replenish-modal').classList.add('open');
-	}
+    function openReplenishModal() {
+      // Очищаем поле ввода
+      document.getElementById('replenish-amount').value = '';
+      
+      // Обновляем инструкции в зависимости от состояния кошелька
+      const instructions = document.getElementById('replenish-instructions');
+      if (instructions) {
+        if (isTonConnected) {
+          instructions.innerHTML = `
+            <p><strong>Ваш TON кошелек подключен:</strong></p>
+            <p style="font-size: 12px; word-break: break-all; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
+              ${wallet.account.address}
+            </p>
+            <p><strong>Пополнение на адрес маркета:</strong></p>
+            <p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
+              EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
+            </p>
+            <p>Введите сумму для пополнения баланса (минимум 0.1 TON)</p>
+          `;
+        } else {
+          instructions.innerHTML = `
+            <p>Для пополнения баланса необходимо подключить TON кошелек</p>
+            <p>После подключения кошелька вы сможете пополнить баланс напрямую через блокчейн</p>
+            <p><strong>Адрес маркета для пополнения:</strong></p>
+            <p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px;">
+              EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
+            </p>
+          `;
+        }
+      }
+      
+      document.getElementById('replenish-modal').classList.add('open');
+    }
 
     // Функция для закрытия модального окна пополнения баланса
     function closeReplenishModal() {
