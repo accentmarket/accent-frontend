@@ -1418,8 +1418,8 @@
       }, 1500);
     }
 	// Обработчик возврата из кошелька
-if (window.Telegram && Telegram.WebApp) {
-  Telegram.WebApp.onEvent('back_button_pressed', function() {
+	if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.onEvent('back_button_pressed', function() {
     // Помечаем, что кошелек подключен
     window.walletConnected = true;
     
