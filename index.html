@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Accent — Market of Telegram Gifts</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preload" href="https://accent-frontend.vercel.app/accent-logo.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/close-icon.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/market-icon-active.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/market-icon.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/gift-icon-active.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/gift-icon.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/activity-active.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/activity.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/profile-active.png" as="image">
+  <link rel="preload" href="https://accent-frontend.vercel.app/profile.png" as="image">
   <style>
     :root {
       --bg: #0a011a;
@@ -15,12 +25,14 @@
       --text: #FFFFFF;
       --text-secondary: #B0A0C0;
     }
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
+    
     body {
       background: var(--bg);
       color: var(--text);
@@ -29,16 +41,19 @@
       overflow-x: hidden;
       font-size: 14px;
     }
+    
     html, body {
       height: 100%;
       overflow: hidden;
     }
+    
     .content {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding: 16px;
       min-height: calc(100vh - 140px);
     }
+    
     .header {
       display: flex;
       justify-content: space-between;
@@ -51,6 +66,7 @@
       z-index: 100;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+    
     .logo {
       font-size: 1.3rem;
       font-weight: bold;
@@ -59,6 +75,7 @@
       align-items: center;
       gap: 6px;
     }
+    
     .balance {
       display: flex;
       align-items: center;
@@ -66,6 +83,7 @@
       font-weight: bold;
       color: var(--accent-green);
     }
+    
     /* Табы */
     .subtabs {
       display: flex;
@@ -73,17 +91,20 @@
       background: rgba(20, 10, 42, 0.5);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+    
     .subtab {
       padding: 6px 16px;
       border-radius: 20px;
       cursor: pointer;
       font-weight: 500;
     }
+    
     .subtab.active {
       background: var(--accent);
       color: black;
       box-shadow: 0 0 8px var(--accent);
     }
+    
     /* Фильтры */
     .filters {
       display: flex;
@@ -92,6 +113,7 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+    
     .filter-btn {
       background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -102,9 +124,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+    
     .filter-btn:hover {
       background: rgba(255, 42, 109, 0.2);
     }
+    
     /* Сетка подарков */
     .gift-grid {
       display: grid;
@@ -112,6 +136,7 @@
       gap: 16px;
       padding: 8px 0 120px 0;
     }
+    
     .gift-card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -120,9 +145,11 @@
       transition: transform 0.2s;
       cursor: pointer;
     }
+    
     .gift-card:hover {
       transform: translateY(-2px);
     }
+    
     .gift-image {
       height: 100px;
       width: 100%;
@@ -132,9 +159,11 @@
       justify-content: center;
       font-size: 32px;
     }
+    
     .gift-info {
       padding: 10px;
     }
+    
     .gift-name {
       font-weight: 600;
       margin-bottom: 4px;
@@ -142,11 +171,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    
     .gift-price {
       color: var(--accent);
       font-weight: bold;
       font-size: 13px;
     }
+    
     /* Активные фильтры */
     .applied-filters {
       display: flex;
@@ -154,6 +185,7 @@
       gap: 8px;
       padding: 10px 0;
     }
+    
     .applied-filter {
       background: rgba(255, 42, 109, 0.2);
       color: var(--accent);
@@ -164,14 +196,17 @@
       align-items: center;
       gap: 4px;
     }
+    
     .remove-filter {
       cursor: pointer;
       opacity: 0.7;
       margin-left: 4px;
     }
+    
     .remove-filter:hover {
       opacity: 1;
     }
+    
     /* Нижнее меню */
     .footer-nav {
       display: flex;
@@ -186,6 +221,7 @@
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       z-index: 100;
     }
+    
     .nav-item {
       display: flex;
       flex-direction: column;
@@ -194,16 +230,20 @@
       font-size: 12px;
       color: var(--text-secondary);
     }
+    
     .nav-item.active {
       color: var(--accent);
     }
+    
     .nav-icon img {
       height: 21px;
       width: 21px;
     }
+    
     .hidden {
       display: none !important;
     }
+    
     .fab {
       position: fixed;
       bottom: 70px;
@@ -223,9 +263,11 @@
       z-index: 99;
       font-family: inherit;
     }
+    
     .fab.hidden {
       display: none;
     }
+    
     /* Модальное окно */
     .modal {
       position: fixed;
@@ -241,10 +283,12 @@
       pointer-events: none;
       transition: opacity 0.3s;
     }
+    
     .modal.open {
       opacity: 1;
       pointer-events: all;
     }
+    
     .modal-content {
       width: 100%;
       background: var(--card-bg);
@@ -254,25 +298,30 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
+    
     .modal-header {
       text-align: center;
       margin-bottom: 20px;
     }
+    
     .modal-title {
       font-size: 18px;
       font-weight: bold;
       margin: 8px 0;
     }
+    
     .modal-description {
       color: var(--text-secondary);
       font-size: 13px;
       line-height: 1.4;
     }
+    
     .modal-btns {
       display: flex;
       gap: 10px;
       margin-top: 20px;
     }
+    
     .modal-btn {
       flex: 1;
       padding: 14px;
@@ -283,18 +332,22 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+    
     .btn-primary {
       background: var(--accent);
       color: black;
     }
+    
     .btn-secondary {
       background: rgba(255, 255, 255, 0.1);
       color: var(--text);
     }
+    
     .btn-buy {
       background: var(--accent-green);
       color: black;
     }
+    
     .modal-close {
       position: absolute;
       top: 12px;
@@ -309,9 +362,11 @@
       border-radius: 50%;
       background: transparent;
     }
+    
     .modal-close:hover {
       background: rgba(255, 255, 255, 0.1);
     }
+    
     /* Модальное окно для пополнения баланса */
     .replenish-modal {
       position: fixed;
@@ -327,17 +382,21 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       display: none;
     }
+    
     .replenish-modal.open {
       display: block;
     }
+    
     .input-group {
       margin: 16px 0;
     }
+    
     .input-group label {
       display: block;
       margin-bottom: 6px;
       font-size: 14px;
     }
+    
     .input-group input {
       width: 100%;
       padding: 12px;
@@ -347,19 +406,23 @@
       color: var(--text);
       font-size: 15px;
     }
+    
     .input-group input:focus {
       outline: none;
       border-color: var(--accent);
     }
+    
     /* Дополнительные стили для разделов */
     .profile-section {
       display: none;
       padding: 20px;
     }
+    
     .profile-header {
       text-align: center;
       margin-bottom: 20px;
     }
+    
     .avatar {
       width: 80px;
       height: 80px;
@@ -373,12 +436,14 @@
       color: black;
       font-weight: bold;
     }
+    
     .profile-balance {
       font-size: 1.2rem;
       font-weight: bold;
       color: var(--accent-yellow);
       margin: 12px 0;
     }
+    
     .btn-replenish {
       width: 100%;
       padding: 12px;
@@ -391,10 +456,12 @@
       margin: 16px 0;
       transition: all 0.2s;
     }
+    
     .btn-replenish:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(255, 42, 109, 0.3);
     }
+    
     /* Стили для формы добавления канала */
     .add-channel-modal {
       position: fixed;
@@ -410,15 +477,18 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       display: none;
     }
+    
     .add-channel-modal.open {
       display: block;
     }
+    
     .price-tags {
       display: flex;
       gap: 8px;
       margin: 16px 0;
       flex-wrap: wrap;
     }
+    
     .price-tag {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -427,11 +497,13 @@
       cursor: pointer;
       font-size: 14px;
     }
+    
     .price-tag.active {
       background: var(--accent);
       color: black;
       border-color: var(--accent);
     }
+    
     /* Модальное окно для фильтров */
     .filter-modal {
       position: fixed;
@@ -447,15 +519,18 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       display: none;
     }
+    
     .filter-modal.open {
       display: block;
     }
+    
     .filter-options {
       display: flex;
       flex-direction: column;
       gap: 12px;
       margin: 16px 0;
     }
+    
     .filter-option {
       padding: 12px;
       background: rgba(255, 255, 255, 0.05);
@@ -465,22 +540,27 @@
       align-items: center;
       gap: 10px;
     }
+    
     .filter-option.active {
       background: var(--accent);
       color: black;
     }
+    
     .filter-slider {
       margin: 20px 0;
     }
+    
     .slider-container {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+    
     .slider-value {
       min-width: 60px;
       text-align: center;
     }
+    
     input[type="range"] {
       flex: 1;
       height: 8px;
@@ -488,6 +568,7 @@
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
     }
+    
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 20px;
@@ -496,6 +577,7 @@
       background: var(--accent);
       cursor: pointer;
     }
+    
     /* Вкладка "Мои подарки" */
     .my-gifts-grid {
       display: grid;
@@ -503,6 +585,7 @@
       gap: 16px;
       padding: 8px 0 120px 0;
     }
+    
     .my-gift-card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -510,6 +593,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       position: relative;
     }
+    
     .gift-status {
       position: absolute;
       top: 8px;
@@ -521,17 +605,20 @@
       border-radius: 12px;
       font-weight: bold;
     }
+    
     /* Активность */
     .activity-section {
       display: none;
       padding: 20px;
     }
+    
     .activity-item {
       display: flex;
       gap: 12px;
       padding: 16px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+    
     .activity-icon {
       width: 40px;
       height: 40px;
@@ -542,17 +629,21 @@
       justify-content: center;
       font-size: 20px;
     }
+    
     .activity-details {
       flex: 1;
     }
+    
     .activity-title {
       font-weight: 500;
       margin-bottom: 4px;
     }
+    
     .activity-time {
       font-size: 12px;
       color: var(--text-secondary);
     }
+    
     /* Адаптивность */
     @media (max-width: 360px) {
       .gift-grid {
@@ -565,6 +656,7 @@
         width: 100%;
       }
     }
+    
     @media (max-height: 600px) {
       .modal-content {
         max-height: 75vh;
@@ -579,7 +671,7 @@
   <!-- Шапка -->
   <div class="header">
     <div class="logo">
-      <img src="accent-logo.png" style="height: 32px; margin-right: 8px;">
+      <img src="https://accent-frontend.vercel.app/accent-logo.png" style="height: 32px; margin-right: 8px;">
     </div>
     <div class="balance" id="header-balance">+ 0 TON</div>
   </div>
@@ -669,25 +761,25 @@
   <div class="footer-nav">
     <div class="nav-item active" data-tab="market">
       <div class="nav-icon">
-        <img src="market-icon-active.png" style="height: 21px;">
+        <img src="https://accent-frontend.vercel.app/market-icon-active.png" style="height: 21px;">
       </div>
       <div>Маркет</div>
     </div>
     <div class="nav-item" data-tab="my-gifts">
       <div class="nav-icon">
-        <img src="gift-icon.png" style="height: 21px;">
+        <img src="https://accent-frontend.vercel.app/gift-icon.png" style="height: 21px;">
       </div>
       <div>Мои подарки</div>
     </div>
     <div class="nav-item" data-tab="activity">
       <div class="nav-icon">
-        <img src="activity.png" style="height: 21px;">
+        <img src="https://accent-frontend.vercel.app/activity.png" style="height: 21px;">
       </div>
       <div>Активность</div>
     </div>
     <div class="nav-item" data-tab="profile">
       <div class="nav-icon">
-        <img src="profile.png" style="height: 21px;">
+        <img src="https://accent-frontend.vercel.app/profile.png" style="height: 21px;">
       </div>
       <div>Профиль</div>
     </div>
@@ -715,22 +807,22 @@
   
   <!-- Модальное окно пополнения баланса -->
   <div class="replenish-modal" id="replenish-modal">
-  <div class="modal-close" id="replenish-close">×</div>
-  <div class="modal-header">
-    <h3>Подключите ваш TON кошелек</h3>
-    <p>Используйте Кошелек в Telegram или выберите другое приложение</p>
+    <div class="modal-close" id="replenish-close">×</div>
+    <div class="modal-header">
+      <h3>Подключите ваш TON кошелек</h3>
+      <p>Используйте Кошелек в Telegram или выберите другое приложение</p>
+    </div>
+    <div style="text-align: center; margin: 20px 0;">
+      <div class="wallet-icon" style="font-size: 48px; margin: 16px 0; color: #00F5FF;">👛</div>
+      <h4>TON Кошелек</h4>
+    </div>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="connect-wallet-btn">
+      Подключить Кошелек в Telegram
+    </button>
+    <div style="margin-top: 20px; text-align: center; color: var(--text-secondary); font-size: 12px;">
+      <p>После подключения кошелька вы сможете пополнить баланс</p>
+    </div>
   </div>
-  <div style="text-align: center; margin: 20px 0;">
-    <div class="wallet-icon" style="font-size: 48px; margin: 16px 0; color: #00F5FF;">👛</div>
-    <h4>TON Кошелек</h4>
-  </div>
-  <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="connect-wallet-btn">
-    Подключить Кошелек в Telegram
-  </button>
-  <div style="margin-top: 20px; text-align: center; color: var(--text-secondary); font-size: 12px;">
-    <p>После подключения кошелька вы сможете пополнить баланс</p>
-  </div>
-</div>
   
   <!-- Модальное окно добавления канала -->
   <div class="add-channel-modal" id="add-channel-modal">
@@ -811,8 +903,6 @@
     let currentUser = null;
     let walletConnected = false;
     let userBalance = 0;
-	let walletConnected = false;
-	let userBalance = 0;
     
     // Данные для демонстрации
     const gifts = {
@@ -949,7 +1039,7 @@
       document.getElementById('sort-close').addEventListener('click', () => {
         document.getElementById('sort-modal').classList.remove('open');
       });
-		
+      
       // Обработчики фильтров
       document.querySelector('.filters').addEventListener('click', function(e) {
         if (e.target.classList.contains('filter-btn')) {
@@ -1018,12 +1108,10 @@
         document.getElementById('price-modal').classList.remove('open');
       });
       
-      
-      // Обработчик для кнопки подключения кошелька в модальном окне
-		document.getElementById('connect-wallet-btn').addEventListener('click', function() {
-		  document.getElementById('replenish-modal').classList.remove('open');
-		  connectWallet();
-		});
+      // Обработчик кнопки подключения кошелька
+      document.getElementById('connect-wallet-btn').addEventListener('click', function() {
+        connectWallet();
+      });
       
       // Обработчик кнопки закрытия модального окна пополнения
       document.getElementById('replenish-close').addEventListener('click', function() {
@@ -1032,24 +1120,8 @@
       
       // Обработчик кнопки пополнения баланса
       document.getElementById('replenish-btn').addEventListener('click', function() {
-  if (typeof window.walletConnected === 'undefined' || !window.walletConnected) {
-    // Открываем модальное окно для привязки кошелька
-    const modal = document.getElementById('replenish-modal');
-    if (modal) {
-      modal.classList.add('open');
-    } else {
-      // Если модального окна нет, сразу подключаем кошелек
-      connectWallet();
-    }
-	} else {
-		// Если кошелек уже подключен, предлагаем ввести сумму
-	const amount = prompt("Введите сумму для пополнения в TON:");
-	if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-		alert(`Пополнение на ${amount} TON инициировано!`);
-		  // Здесь будет запрос к бэкенду для создания платежа
-		}
-	  }
-	});
+        openReplenishModal();
+      });
       
       // Обработчик клика по балансу в шапке
       document.getElementById('header-balance').addEventListener('click', function() {
@@ -1082,7 +1154,7 @@
         document.getElementById('gift-price').value = '';
       });
       
-      // Обработчик возврата из кошелька
+      // Обработка возврата из кошелька
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.onEvent('back_button_pressed', checkWalletConnection);
       }
@@ -1380,26 +1452,26 @@
     
     // Подключение TON кошелька (правильная реализация)
     function connectWallet() {
-  // Закрываем модальное окно
-  document.getElementById('replenish-modal').classList.remove('open');
-  
-  // Получаем текущий URL для возврата
-  const currentUrl = encodeURIComponent(window.location.href);
-  
-  if (window.Telegram && Telegram.WebApp) {
-    // Правильный URL для открытия кошелька как Mini App
-    Telegram.WebApp.openTelegramLink(
-      `https://t.me/wallet?startattach=tonconnect&tonback=${currentUrl}`
-    );
-    
-    // Показываем уведомление
-    Telegram.WebApp.showAlert('Пожалуйста, подтвердите подключение в вашем TON Кошельке');
-  } else {
-    // Для десктопа
-    const walletUrl = `ton://connect?tonback=${currentUrl}`;
-    window.open(walletUrl, '_blank');
-  }
-}
+      // Закрываем наше модальное окно
+      document.getElementById('replenish-modal').classList.remove('open');
+      
+      // Получаем текущий URL для возврата
+      const currentUrl = encodeURIComponent(window.location.href);
+      
+      if (window.Telegram && Telegram.WebApp) {
+        // Правильный URL для подключения TON кошелька как Mini App
+        Telegram.WebApp.openTelegramLink(
+          `https://t.me/wallet?startattach=tonconnect&tonback=${currentUrl}`
+        );
+        
+        // Показываем уведомление
+        Telegram.WebApp.showAlert('Пожалуйста, подтвердите подключение в вашем TON Кошельке');
+      } else {
+        // Для десктопа
+        const walletUrl = `ton://connect?tonback=${currentUrl}`;
+        window.open(walletUrl, '_blank');
+      }
+    }
     
     // Проверка подключения кошелька после возврата
     function checkWalletConnection() {
@@ -1417,21 +1489,6 @@
         document.getElementById('replenish-btn').textContent = 'Пополнить баланс';
       }, 1500);
     }
-	// Обработчик возврата из кошелька
-	if (window.Telegram && Telegram.WebApp) {
-    Telegram.WebApp.onEvent('back_button_pressed', function() {
-    // Помечаем, что кошелек подключен
-    window.walletConnected = true;
-    
-    // Обновляем интерфейс
-    if (document.getElementById('replenish-btn')) {
-      document.getElementById('replenish-btn').textContent = 'Пополнить баланс';
-    }
-    
-    // Показываем уведомление
-    Telegram.WebApp.showAlert('✅ TON Кошелек успешно подключен!');
-  });
-}
   </script>
 </body>
 </html>
