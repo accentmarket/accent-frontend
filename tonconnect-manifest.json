@@ -1,5 +1,7 @@
 {
   "url": "https://accent-frontend.vercel.app",
   "name": "Accent Market",
-  "iconUrl": "https://accent-frontend.vercel.app/icon.png"
+  "iconUrl": "https://accent-frontend.vercel.app/accent-logo.png",
+  "termsOfUseUrl": "https://accent-frontend.vercel.app/terms",
+  "privacyPolicyUrl": "https://accent-frontend.vercel.app/privacy"
 }
