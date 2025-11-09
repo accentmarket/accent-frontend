@@ -715,22 +715,22 @@
   
   <!-- Модальное окно пополнения баланса -->
   <div class="replenish-modal" id="replenish-modal">
-    <div class="modal-close" id="replenish-close">×</div>
-    <div class="modal-header">
-      <h3>Подключите ваш TON кошелек</h3>
-      <p>Используйте Кошелек в Telegram или выберите другое приложение</p>
-    </div>
-    <div style="text-align: center; margin: 20px 0;">
-      <div class="wallet-icon" style="font-size: 48px; margin: 16px 0; color: #00F5FF;">👛</div>
-      <h4>TON Кошелек</h4>
-    </div>
-    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="connect-wallet-btn">
-      Подключить Кошелек в Telegram
-    </button>
-    <div style="margin-top: 20px; text-align: center; color: var(--text-secondary); font-size: 12px;">
-      <p>После подключения кошелька вы сможете пополнить баланс</p>
-    </div>
+  <div class="modal-close" id="replenish-close">×</div>
+  <div class="modal-header">
+    <h3>Подключите ваш TON кошелек</h3>
+    <p>Используйте Кошелек в Telegram или выберите другое приложение</p>
   </div>
+  <div style="text-align: center; margin: 20px 0;">
+    <div class="wallet-icon" style="font-size: 48px; margin: 16px 0; color: #00F5FF;">👛</div>
+    <h4>TON Кошелек</h4>
+  </div>
+  <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="connect-wallet-btn">
+    Подключить Кошелек в Telegram
+  </button>
+  <div style="margin-top: 20px; text-align: center; color: var(--text-secondary); font-size: 12px;">
+    <p>После подключения кошелька вы сможете пополнить баланс</p>
+  </div>
+</div>
   
   <!-- Модальное окно добавления канала -->
   <div class="add-channel-modal" id="add-channel-modal">
@@ -811,6 +811,8 @@
     let currentUser = null;
     let walletConnected = false;
     let userBalance = 0;
+	let walletConnected = false;
+	let userBalance = 0;
     
     // Данные для демонстрации
     const gifts = {
@@ -947,7 +949,7 @@
       document.getElementById('sort-close').addEventListener('click', () => {
         document.getElementById('sort-modal').classList.remove('open');
       });
-      
+		
       // Обработчики фильтров
       document.querySelector('.filters').addEventListener('click', function(e) {
         if (e.target.classList.contains('filter-btn')) {
@@ -1016,10 +1018,12 @@
         document.getElementById('price-modal').classList.remove('open');
       });
       
-      // Обработчик кнопки подключения кошелька
-      document.getElementById('connect-wallet-btn').addEventListener('click', function() {
-        connectWallet();
-      });
+      
+      // Обработчик для кнопки подключения кошелька в модальном окне
+		document.getElementById('connect-wallet-btn').addEventListener('click', function() {
+		  document.getElementById('replenish-modal').classList.remove('open');
+		  connectWallet();
+		});
       
       // Обработчик кнопки закрытия модального окна пополнения
       document.getElementById('replenish-close').addEventListener('click', function() {
@@ -1028,8 +1032,24 @@
       
       // Обработчик кнопки пополнения баланса
       document.getElementById('replenish-btn').addEventListener('click', function() {
-        openReplenishModal();
-      });
+  if (typeof window.walletConnected === 'undefined' || !window.walletConnected) {
+    // Открываем модальное окно для привязки кошелька
+    const modal = document.getElementById('replenish-modal');
+    if (modal) {
+      modal.classList.add('open');
+    } else {
+      // Если модального окна нет, сразу подключаем кошелек
+      connectWallet();
+    }
+	} else {
+		// Если кошелек уже подключен, предлагаем ввести сумму
+	const amount = prompt("Введите сумму для пополнения в TON:");
+	if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+		alert(`Пополнение на ${amount} TON инициировано!`);
+		  // Здесь будет запрос к бэкенду для создания платежа
+		}
+	  }
+	});
       
       // Обработчик клика по балансу в шапке
       document.getElementById('header-balance').addEventListener('click', function() {
@@ -1360,26 +1380,26 @@
     
     // Подключение TON кошелька (правильная реализация)
     function connectWallet() {
-      // Закрываем наше модальное окно
-      document.getElementById('replenish-modal').classList.remove('open');
-      
-      // Получаем текущий URL для возврата
-      const currentUrl = encodeURIComponent(window.location.href);
-      
-      if (window.Telegram && Telegram.WebApp) {
-        // Правильный URL для подключения TON кошелька как Mini App
-        Telegram.WebApp.openTelegramLink(
-          `https://t.me/wallet?startattach=tonconnect&tonback=${currentUrl}`
-        );
-        
-        // Показываем уведомление
-        Telegram.WebApp.showAlert('Пожалуйста, подтвердите подключение в вашем TON Кошельке');
-      } else {
-        // Для десктопа
-        const walletUrl = `ton://connect?tonback=${currentUrl}`;
-        window.open(walletUrl, '_blank');
-      }
-    }
+  // Закрываем модальное окно
+  document.getElementById('replenish-modal').classList.remove('open');
+  
+  // Получаем текущий URL для возврата
+  const currentUrl = encodeURIComponent(window.location.href);
+  
+  if (window.Telegram && Telegram.WebApp) {
+    // Правильный URL для открытия кошелька как Mini App
+    Telegram.WebApp.openTelegramLink(
+      `https://t.me/wallet?startattach=tonconnect&tonback=${currentUrl}`
+    );
+    
+    // Показываем уведомление
+    Telegram.WebApp.showAlert('Пожалуйста, подтвердите подключение в вашем TON Кошельке');
+  } else {
+    // Для десктопа
+    const walletUrl = `ton://connect?tonback=${currentUrl}`;
+    window.open(walletUrl, '_blank');
+  }
+}
     
     // Проверка подключения кошелька после возврата
     function checkWalletConnection() {
@@ -1397,6 +1417,21 @@
         document.getElementById('replenish-btn').textContent = 'Пополнить баланс';
       }, 1500);
     }
+	// Обработчик возврата из кошелька
+if (window.Telegram && Telegram.WebApp) {
+  Telegram.WebApp.onEvent('back_button_pressed', function() {
+    // Помечаем, что кошелек подключен
+    window.walletConnected = true;
+    
+    // Обновляем интерфейс
+    if (document.getElementById('replenish-btn')) {
+      document.getElementById('replenish-btn').textContent = 'Пополнить баланс';
+    }
+    
+    // Показываем уведомление
+    Telegram.WebApp.showAlert('✅ TON Кошелек успешно подключен!');
+  });
+}
   </script>
 </body>
 </html>
