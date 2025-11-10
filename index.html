@@ -670,34 +670,62 @@
     </div>
 
     <!-- Профиль -->
-    <div id="profile-screen" class="hidden">
-      <div style="text-align: center; margin: 20px 0;">
-        <div style="width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">I</div>
-        <h3 id="user-name">Загрузка...</h3>
-        <p id="user-username">@loading</p>
-        
-        <!-- Секция TON кошелька -->
-        <div class="ton-connect-section">
-          <div id="wallet-info" class="hidden">
-            <div class="wallet-info">
-              <div>✅ TON кошелек подключен</div>
-              <div class="wallet-address" id="wallet-address"></div>
-              <div class="wallet-balance">Баланс: <span id="ton-wallet-balance">0</span> TON</div>
-              <button class="disconnect-btn" id="disconnect-wallet">Отключить кошелек</button>
-            </div>
-          </div>
-          <div id="connect-wallet-section">
-            <p>Для пополнения баланса подключите TON кошелек</p>
-            <button class="ton-connect-btn" id="connect-wallet-btn">
-              <span>🔗</span> Подключить TON кошелек
-            </button>
-          </div>
-        </div>
-        
-        <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">0.00 TON</div>
-        <button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
-      </div>
-    </div>
+	<div id="profile-screen" class="hidden">
+	  <div style="text-align: center; margin: 20px 0;">
+		<div style="width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">I</div>
+		<h3 id="user-name">Загрузка...</h3>
+		<p id="user-username">@loading</p>
+		
+		<!-- Секция TON кошелька -->
+		<div class="ton-connect-section">
+		  <div id="wallet-info" class="hidden">
+			<div class="wallet-info">
+			  <div>✅ TON кошелек подключен</div>
+			  <div class="wallet-address" id="wallet-address"></div>
+			  <div class="wallet-balance">Баланс: <span id="ton-wallet-balance">0</span> TON</div>
+			  <button class="disconnect-btn" id="disconnect-wallet">Отключить кошелек</button>
+			</div>
+		  </div>
+		  <div id="connect-wallet-section">
+			<p>Для пополнения баланса подключите TON кошелек</p>
+			<button class="ton-connect-btn" id="connect-wallet-btn">
+			  <span>🔗</span> Подключить TON кошелек
+			</button>
+		  </div>
+		</div>
+		
+		<div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">0.00 TON</div>
+		<button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
+		
+		<!-- Новый блок: Ссылки на Telegram -->
+		<div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+		  <h4 style="margin-bottom: 16px; color: var(--text-secondary);">Наши ресурсы</h4>
+		  
+		  <div style="display: flex; flex-direction: column; gap: 10px;">
+			<!-- Канал -->
+			<button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_channel')">
+			  <span>📢</span> Наш канал
+			</button>
+			
+			<!-- Чат -->
+			<button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_chat')">
+			  <span>💬</span> Чат сообщества
+			</button>
+			
+			<!-- Бот -->
+			<button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accentmarketbot')">
+			  <span>🤖</span> Наш бот
+			</button>
+		  </div>
+		</div>
+		
+		<!-- Дополнительная информация -->
+		<div style="margin-top: 20px; font-size: 12px; color: var(--text-secondary);">
+		  <p>Accent Market — рынок Telegram подарков</p>
+		  <p style="margin-top: 8px;">Версия 1.0.0</p>
+		</div>
+	  </div>
+	</div>
   </div>
 
   <div class="fab hidden" id="fab-btn">+</div>
