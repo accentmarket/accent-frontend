@@ -1183,18 +1183,19 @@
       
       try {
         // Правильный адрес кошелька в формате EQ
-        const marketWalletAddress = "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6";
+        const marketWalletAddress = "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_";
         
         // Создаем транзакцию для пополнения
         const transaction = {
-          validUntil: Math.floor(Date.now() / 1000) + 300, // 5 минут
-          messages: [
-            {
-              address: marketWalletAddress,
-              amount: (amount * 1000000000).toString(), // Конвертируем в наноTON
-            }
-          ]
-        };
+		  validUntil: Math.floor(Date.now() / 1000) + 300,
+		  messages: [
+			{
+			  address: "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_",
+			  amount: (amount * 1000000000).toString()
+			  // Без payload - это простой перевод TON
+			}
+		  ]
+		};
         
         console.log('Создана транзакция:', transaction);
         console.log('Отправляем на адрес:', marketWalletAddress);
@@ -1507,23 +1508,23 @@
       if (instructions) {
         if (isTonConnected) {
           instructions.innerHTML = `
-            <p><strong>Ваш TON кошелек подключен:</strong></p>
-            <p style="font-size: 12px; word-break: break-all; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-              ${wallet.account.address}
-            </p>
-            <p><strong>Пополнение на адрес маркета:</strong></p>
-            <p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-              EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
-            </p>
-            <p>Введите сумму для пополнения баланса (минимум 0.1 TON)</p>
-          `;
+			<p><strong>Ваш TON кошелек подключен:</strong></p>
+			  <p style="font-size: 12px; word-break: break-all; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
+				${wallet.account.address}
+			  </p>
+			  <p><strong>Пополнение на адрес маркета:</strong></p>
+			  <p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
+				EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_
+			  </p>
+			  <p>Введите сумму для пополнения баланса (минимум 0.1 TON)</p>
+			`;
         } else {
           instructions.innerHTML = `
             <p>Для пополнения баланса необходимо подключить TON кошелек</p>
             <p>После подключения кошелька вы сможете пополнить баланс напрямую через блокчейн</p>
             <p><strong>Адрес маркета для пополнения:</strong></p>
             <p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px;">
-              EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435tj6
+              EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_
             </p>
           `;
         }
