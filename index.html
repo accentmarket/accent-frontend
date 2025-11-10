@@ -727,26 +727,33 @@
         <button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
         
         <!-- Новый блок: Ссылки на Telegram -->
-        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-          <h4 style="margin-bottom: 16px; color: var(--text-secondary);">Наши ресурсы</h4>
-          
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Канал -->
-            <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_channel')">
-              <span>📢</span> Наш канал
-            </button>
-            
-            <!-- Чат -->
-            <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_chat')">
-              <span>💬</span> Чат сообщества
-            </button>
-            
-            <!-- Бот -->
-            <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accentmarketbot')">
-              <span>🤖</span> Наш бот
-            </button>
-          </div>
-        </div>
+        <!-- Стильный вариант с иконками -->
+		<div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+		  <h4 style="margin-bottom: 16px; color: var(--text-secondary);">Наши ресурсы</h4>
+		  
+		  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+			<!-- Канал -->
+			<div style="background: var(--card-bg); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);" 
+				 onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_channel')">
+			  <img src="https://accent-frontend.vercel.app/channel-icon.png" alt="Канал" style="width: 24px; height: 24px; margin-bottom: 8px;">
+			  <div style="font-size: 12px; font-weight: 600;">Канал</div>
+			</div>
+			
+			<!-- Чат -->
+			<div style="background: var(--card-bg); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);" 
+				 onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_chat')">
+			  <img src="https://accent-frontend.vercel.app/chat-icon.png" alt="Чат" style="width: 24px; height: 24px; margin-bottom: 8px;">
+			  <div style="font-size: 12px; font-weight: 600;">Чат</div>
+			</div>
+		  </div>
+		  
+		  <!-- Бот (полная ширина) -->
+		  <div style="background: var(--card-bg); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 16px;" 
+			   onclick="Telegram.WebApp.openTelegramLink('https://t.me/accentmarketbot')">
+			<img src="https://accent-frontend.vercel.app/bot-icon.png" alt="Бот" style="width: 24px; height: 24px; margin-bottom: 8px;">
+			<div style="font-size: 12px; font-weight: 600;">Наш бот</div>
+		  </div>
+		</div>
         
         <!-- Дополнительная информация -->
         <div style="margin-top: 20px; font-size: 12px; color: var(--text-secondary);">
