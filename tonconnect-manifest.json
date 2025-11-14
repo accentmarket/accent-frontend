@@ -1,23 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    }
-  ]
+  "url": "https://your-app-url.com",
+  "name": "Accent Market",
+  "iconUrl": "https://your-app-url.com/icon.png",
+  "termsOfUseUrl": "https://your-app-url.com/terms",
+  "privacyPolicyUrl": "https://your-app-url.com/privacy"
 }
