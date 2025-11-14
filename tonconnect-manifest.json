@@ -1,5 +1,23 @@
 {
-  "url": "https://t.me/accentmarketbot",
-  "name": "Accent Market", 
-  "iconUrl": "https://accent-frontend.vercel.app/accent-logo.png"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "public/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ]
 }
