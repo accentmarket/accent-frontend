@@ -928,100 +928,58 @@
 	  avatarEl.style.fontWeight = 'bold';
 	}
 	function initTonConnect() {
-	  try {
-		if (typeof TonConnectUI === 'undefined') {
-		  console.error('TON Connect UI не загружен');
-		  return;
-		}
-		const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
-		tonConnectUI = new window.TonConnectUI({
-		  manifestUrl: manifestUrl,
-		  actionsConfiguration: {
-			twaReturnUrl: 'https://t.me/accentmarketbot'
-		  }
-		});
-		tonConnectUI.onStatusChange(async (walletInfo) => {
-		  if (walletInfo) {
-			wallet = walletInfo;
-			isTonConnected = true;
-			console.log('TON кошелек подключен:', walletInfo);
-			updateWalletUI();
-			await fetchTonWalletBalance();
-		  } else {
-			wallet = null;
-			isTonConnected = false;
-			console.log('TON кошелек отключен');
-			updateWalletUI();
-		  }
-		});
-		if (tonConnectUI.connectionRestored) {
-		  tonConnectUI.connectionRestored.then(() => {
-			console.log('Состояние подключения восстановлено');
-		  });
-		}
-	  } catch (error) {
-		console.error('Ошибка инициализации TON Connect:', error);
-	  }
-	}
-	function updateWalletUI() {
-	  const headerBalance = document.getElementById('header-balance');
-	  const walletInfoSection = document.getElementById('wallet-info');
-	  const connectWalletSection = document.getElementById('connect-wallet-section');
-	  const walletAddress = document.getElementById('wallet-address');
-	  const replenishBtn = document.getElementById('replenish-btn');
-	  if (isTonConnected && wallet) {
-		const fullAddress = wallet.account.address;
-		if (headerBalance) {
-		  headerBalance.classList.add('connected');
-		}
-		if (walletInfoSection && connectWalletSection && walletAddress) {
-		  walletInfoSection.classList.remove('hidden');
-		  connectWalletSection.classList.add('hidden');
-		  walletAddress.textContent = fullAddress;
-		}
-		if (replenishBtn) {
-		  replenishBtn.textContent = 'Пополнить через TON';
-		}
-	  } else {
-		if (headerBalance) {
-		  headerBalance.classList.remove('connected');
-		}
-		if (walletInfoSection && connectWalletSection) {
-		  walletInfoSection.classList.add('hidden');
-		  connectWalletSection.classList.remove('hidden');
-		}
-		if (replenishBtn) {
-		  replenishBtn.textContent = 'Подключить TON кошелек';
-		}
-	  }
-	  updateBalanceDisplay();
-	}
-	function openTonConnectModal() {
-	  if (tonConnectUI) {
-		tonConnectUI.openModal();
-	  } else {
-		console.error('TON Connect UI не инициализирован');
-	  }
-	}
-	async function fetchTonWalletBalance() {
-	  if (!wallet || !wallet.account) {
-		console.log('Кошелек не подключен');
-		return;
-	  }
-	  try {
-		const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {apiKey: 'YOUR_API_KEY'}));
-		const address = wallet.account.address;
-		const balanceNano = await tonweb.provider.getBalance(address);
-		const tonBalance = parseInt(balanceNano) / 1000000000;
-		const tonWalletBalanceEl = document.getElementById('ton-wallet-balance');
-		if (tonWalletBalanceEl) {
-		  tonWalletBalanceEl.textContent = tonBalance.toFixed(2);
-		}
-		console.log('Баланс TON кошелька:', tonBalance);
-	  } catch (error) {
-		console.error('Ошибка получения баланса TON кошелька:', error);
-	  }
-	}
+      try {
+        if (typeof TON_CONNECT_UI === 'undefined') {
+          console.error('TON Connect UI не загружен');
+          return;
+        }
+        const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
+        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+          manifestUrl: manifestUrl,
+          actionsConfiguration: {
+            twaReturnUrl: 'https://t.me/accentmarketbot'
+          }
+        });
+        tonConnectUI.onStatusChange(async (walletInfo) => {
+          if (walletInfo) {
+            wallet = walletInfo;
+            isTonConnected = true;
+            console.log('TON кошелек подключен:', walletInfo);
+            updateWalletUI();
+            await fetchTonWalletBalance();
+          } else {
+            wallet = null;
+            isTonConnected = false;
+            console.log('TON кошелек отключен');
+            updateWalletUI();
+          }
+        });
+        tonConnectUI.connectionRestored.then(() => {
+          console.log('Состояние подключения восстановлено');
+        });
+      } catch (error) {
+        console.error('Ошибка инициализации TON Connect:', error);
+      }
+    }
+    
+    // Функция fetchTonWalletBalance возвращена к исходной реализации
+    async function fetchTonWalletBalance() {
+      if (!wallet || !wallet.provider) {
+        console.log('Кошелек не подключен');
+        return;
+      }
+      try {
+        const balance = await wallet.provider.getBalance(wallet.account.address);
+        const tonBalance = parseFloat(balance) / 1000000000;
+        const tonWalletBalanceEl = document.getElementById('ton-wallet-balance');
+        if (tonWalletBalanceEl) {
+          tonWalletBalanceEl.textContent = tonBalance.toFixed(2);
+        }
+        console.log('Баланс TON кошелька:', tonBalance);
+      } catch (error) {
+        console.error('Ошибка получения баланса TON кошелька:', error);
+      }
+    }
 	async function createPaymentComment(amount) {
 	  try {
 		const response = await fetch(`${API_BASE_URL}/payments`, {
