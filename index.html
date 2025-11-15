@@ -599,16 +599,13 @@
     </div>
     <div class="balance" id="header-balance">+ 0.00 TON</div>
   </div>
-
   <div class="content" id="main-content">
     <div id="market-screen">
       <div class="subtabs">
         <div class="subtab active" data-subtab="channels">Каналы</div>
         <div class="subtab" data-subtab="nft">NFT</div>
       </div>
-      
       <div class="applied-filters" id="applied-filters"></div>
-      
       <div class="filters">
         <div class="filter-btn" id="model-filter">
           <span>🎁</span> Модель
@@ -622,7 +619,6 @@
       </div>
       <div class="gift-grid" id="gift-list"></div>
     </div>
-
     <div id="my-gifts-screen" class="hidden">
       <div class="subtabs">
         <div class="subtab active" data-subtab="listed">Выставленные</div>
@@ -653,7 +649,6 @@
           </div>
         </div>
       </div>
-
       <div id="purchases-content" class="hidden">
         <div class="list-item">
           <div class="list-header">
@@ -673,7 +668,6 @@
         </div>
       </div>
     </div>
-
     <div id="activity-screen" class="hidden">
       <h3>История операций</h3>
       <div class="list-item">
@@ -685,13 +679,11 @@
         <div class="gift-price" style="text-align: right; color: var(--accent-green);">+12.0 TON</div>
       </div>
     </div>
-
     <div id="profile-screen" class="hidden">
       <div style="text-align: center; margin: 20px 0;">
         <div class="user-avatar" id="user-avatar"></div>
         <h3 id="user-name">Загрузка...</h3>
         <p id="user-username">@loading</p>
-        
         <div class="ton-connect-section">
           <div id="wallet-info" class="hidden">
             <div class="wallet-info">
@@ -708,40 +700,32 @@
             </button>
           </div>
         </div>
-        
         <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">0.00 TON</div>
         <button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
-        
         <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1);">
           <h4 style="margin-bottom: 20px; color: var(--text-secondary);">Наши ресурсы</h4>
-          
           <div style="display: flex; flex-direction: column; gap: 10px;">
             <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 15px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accent_channel')">
               <img src="https://accent-frontend.vercel.app/chanel-icon.png" alt="Канал" style="width: 20px; height: 20px;">
               Наш канал
             </button>
-            
             <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accentchat')">
               <img src="https://accent-frontend.vercel.app/chat-icon.png" alt="Чат" style="width: 20px; height: 20px;">
               Чат сообщества
             </button>
-            
             <button class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="Telegram.WebApp.openTelegramLink('https://t.me/accentmarketbot')">
               <img src="https://accent-frontend.vercel.app/bot-icon.png" alt="Бот" style="width: 20px; height: 20px;">
               Наш бот
             </button>
           </div>
         </div>
-        
         <div style="margin-top: 20px; font-size: 12px; color: var(--text-secondary);">
           <p>Accent Market — рынок Telegram подарков</p>
         </div>
       </div>
     </div>
   </div>
-
   <div class="fab hidden" id="fab-btn">+</div>
-
   <div class="modal" id="gift-modal">
     <div class="modal-close" id="modal-close">×</div>
     <div class="modal-header">
@@ -751,7 +735,6 @@
     </div>
     <div class="modal-btns" id="modal-buttons"></div>
   </div>
-
   <div class="replenish-modal" id="replenish-modal">
     <div class="modal-close" id="replenish-close">×</div>
     <div class="modal-header">
@@ -764,40 +747,32 @@
     </div>
     <button class="btn btn-primary" style="width: 100%;" id="confirm-replenish">Пополнить баланс</button>
   </div>
-
     <div class="add-channel-modal" id="add-channel-modal">
 	  <div class="modal-close" id="add-channel-close">×</div>
-	  
 	  <div class="modal-header">
 		<h3>🎁 Выставить канал на продажу</h3>
 	  </div>
-	  
 	  <div class="instructions">
 		<p><strong>Как это работает:</strong></p>
 		<p>1. Добавьте <strong>@accentmarketbot</strong> администратором вашего канала</p>
 		<p>2. Убедитесь, что в канале есть Premium Gifts</p>
 		<p>3. Введите юзернейм канала и цену</p>
 	  </div>
-	  
 	  <div class="input-group">
 		<label for="channel-username">Юзернейм канала</label>
 		<input type="text" class="input-control" id="channel-username" placeholder="@your_channel" value="@">
 	  </div>
-	  
 	  <div class="input-group">
 		<label for="channel-price">Цена канала в TON</label>
 		<input type="number" class="input-control" id="channel-price" placeholder="0.0" min="0.1" step="0.1">
 	  </div>
-	  
 	  <div class="warning">
 		⚠️ После продажи вы передадите права на канал новому владельцу вместе со всеми подарками
 	  </div>
-	  
 	  <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" id="create-channel-order-btn">
 		🎯 Выставить канал на продажу
 	  </button>
 	</div>
-
   <div class="filter-modal" id="price-modal">
     <div class="modal-close" id="price-close">×</div>
     <div class="modal-header">
@@ -825,7 +800,6 @@
       <button class="btn btn-primary" id="apply-prices">Применить</button>
     </div>
   </div>
-
   <div class="filter-modal" id="sort-modal">
     <div class="modal-close" id="sort-close">×</div>
     <div class="modal-header">
@@ -839,7 +813,6 @@
       <button class="btn btn-primary" id="apply-sort">Применить</button>
     </div>
   </div>
-
   <div class="footer-nav">
     <div class="nav-item active" data-tab="market" data-inactive="https://accent-frontend.vercel.app/market-icon.png" data-active="https://accent-frontend.vercel.app/market-icon-active.png">
       <div class="nav-icon"><img src="https://accent-frontend.vercel.app/market-icon-active.png" alt="Маркет"></div>
@@ -858,22 +831,18 @@
       <div>Профиль</div>
     </div>
   </div>
-
   <script>
 	let userBalance = 0.00;
 	let telegramId = null;
 	let telegramUser = null;
 	const API_BASE_URL = 'https://accent-backend.vercel.app/api';
-
 	let tonConnectUI;
 	let wallet = null;
 	let isTonConnected = false;
-
 	let selectedModels = [];
 	let minPrice = 1;
 	let maxPrice = 99999;
 	let sortMethod = 'asc';
-
 	const giftsData = {
 	  channels: [
 		{ id: 1, name: "Rose", emoji: "🌹", price: 4.2, qty: 3, channel: "@rose_channel" },
@@ -900,23 +869,18 @@
 		{ id: "galaxy", emoji: "🌌", name: "Galaxy" },
 	  ]
 	};
-
 	document.addEventListener('DOMContentLoaded', () => {
 	  if (window.Telegram && Telegram.WebApp) {
 		Telegram.WebApp.ready();
 		Telegram.WebApp.expand();
-		
 		if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
 		  telegramUser = Telegram.WebApp.initDataUnsafe.user;
 		  telegramId = parseInt(telegramUser.id);
-		  
 		  document.getElementById('user-name').textContent = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'Пользователь';
 		  document.getElementById('user-username').textContent = telegramUser.username ? `@${telegramUser.username}` : 'Без юзернейма';
-		  
 		  updateUserAvatar(telegramUser);
 		}
 	  }
-	  
 	  initTonConnect();
 	  renderGifts('channels');
 	  setupEventListeners();
@@ -925,13 +889,10 @@
 	  initFilters();
 	  adjustContentHeight();
 	});
-
 	function updateUserAvatar(user) {
 	  const avatarEl = document.getElementById('user-avatar');
 	  if (!avatarEl) return;
-	  
 	  avatarEl.innerHTML = '';
-	  
 	  if (user.photo_url) {
 		const img = document.createElement('img');
 		img.src = user.photo_url;
@@ -944,11 +905,9 @@
 		showAvatarLetter(avatarEl, user);
 	  }
 	}
-
 	function showAvatarLetter(avatarEl, user) {
 	  const letter = user.first_name ? user.first_name[0].toUpperCase() : 
 					(user.username ? user.username[0].toUpperCase() : 'U');
-	  
 	  avatarEl.textContent = letter;
 	  avatarEl.style.display = 'flex';
 	  avatarEl.style.alignItems = 'center';
@@ -957,23 +916,19 @@
 	  avatarEl.style.color = 'black';
 	  avatarEl.style.fontWeight = 'bold';
 	}
-
 	function initTonConnect() {
 	  try {
-		if (typeof TON_CONNECT_UI === 'undefined') {
+		if (typeof TonConnectUI === 'undefined') {
 		  console.error('TON Connect UI не загружен');
 		  return;
 		}
-		
 		const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
-		
-		tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+		tonConnectUI = new window.TonConnectUI({
 		  manifestUrl: manifestUrl,
 		  actionsConfiguration: {
 			twaReturnUrl: 'https://t.me/accentmarketbot'
 		  }
 		});
-		
 		tonConnectUI.onStatusChange(async (walletInfo) => {
 		  if (walletInfo) {
 			wallet = walletInfo;
@@ -988,36 +943,31 @@
 			updateWalletUI();
 		  }
 		});
-		
-		tonConnectUI.connectionRestored.then(() => {
-		  console.log('Состояние подключения восстановлено');
-		});
-		
+		if (tonConnectUI.connectionRestored) {
+		  tonConnectUI.connectionRestored.then(() => {
+			console.log('Состояние подключения восстановлено');
+		  });
+		}
 	  } catch (error) {
 		console.error('Ошибка инициализации TON Connect:', error);
 	  }
 	}
-
 	function updateWalletUI() {
 	  const headerBalance = document.getElementById('header-balance');
 	  const walletInfoSection = document.getElementById('wallet-info');
 	  const connectWalletSection = document.getElementById('connect-wallet-section');
 	  const walletAddress = document.getElementById('wallet-address');
 	  const replenishBtn = document.getElementById('replenish-btn');
-	  
 	  if (isTonConnected && wallet) {
 		const fullAddress = wallet.account.address;
-		
 		if (headerBalance) {
 		  headerBalance.classList.add('connected');
 		}
-		
 		if (walletInfoSection && connectWalletSection && walletAddress) {
 		  walletInfoSection.classList.remove('hidden');
 		  connectWalletSection.classList.add('hidden');
 		  walletAddress.textContent = fullAddress;
 		}
-		
 		if (replenishBtn) {
 		  replenishBtn.textContent = 'Пополнить через TON';
 		}
@@ -1025,20 +975,16 @@
 		if (headerBalance) {
 		  headerBalance.classList.remove('connected');
 		}
-		
 		if (walletInfoSection && connectWalletSection) {
 		  walletInfoSection.classList.add('hidden');
 		  connectWalletSection.classList.remove('hidden');
 		}
-		
 		if (replenishBtn) {
 		  replenishBtn.textContent = 'Подключить TON кошелек';
 		}
 	  }
-	  
 	  updateBalanceDisplay();
 	}
-
 	function openTonConnectModal() {
 	  if (tonConnectUI) {
 		tonConnectUI.openModal();
@@ -1046,28 +992,25 @@
 		console.error('TON Connect UI не инициализирован');
 	  }
 	}
-
 	async function fetchTonWalletBalance() {
-	  if (!wallet || !wallet.provider) {
+	  if (!wallet || !wallet.account) {
 		console.log('Кошелек не подключен');
 		return;
 	  }
-	  
 	  try {
-		const balance = await wallet.provider.getBalance(wallet.account.address);
-		const tonBalance = parseFloat(balance) / 1000000000;
-		
+		const tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {apiKey: 'YOUR_API_KEY'}));
+		const address = wallet.account.address;
+		const balanceNano = await tonweb.provider.getBalance(address);
+		const tonBalance = parseInt(balanceNano) / 1000000000;
 		const tonWalletBalanceEl = document.getElementById('ton-wallet-balance');
 		if (tonWalletBalanceEl) {
 		  tonWalletBalanceEl.textContent = tonBalance.toFixed(2);
 		}
-		
 		console.log('Баланс TON кошелька:', tonBalance);
 	  } catch (error) {
 		console.error('Ошибка получения баланса TON кошелька:', error);
 	  }
 	}
-
 	async function createPaymentComment(amount) {
 	  try {
 		const response = await fetch(`${API_BASE_URL}/payments`, {
@@ -1078,11 +1021,9 @@
 			amount: amount
 		  })
 		});
-		
 		if (!response.ok) {
 		  throw new Error('Не удалось создать платеж');
 		}
-		
 		const paymentData = await response.json();
 		return paymentData.comment;
 	  } catch (error) {
@@ -1090,7 +1031,6 @@
 		throw error;
 	  }
 	}
-
 	async function encodeCommentToPayload(comment) {
 	  try {
 		const tonweb = new TonWeb();
@@ -1104,27 +1044,21 @@
 		throw error;
 	  }
 	}
-
 	async function replenishWithTon() {
 	  if (!isTonConnected || !wallet) {
 		openTonConnectModal();
 		return;
 	  }
-	  
 	  const amountStr = document.getElementById('replenish-amount').value.trim();
 	  const amount = parseFloat(amountStr);
-	  
 	  if (isNaN(amount) || amount < 0.1) {
 		alert('Пожалуйста, введите корректную сумму (минимум 0.1 TON)');
 		return;
 	  }
-	  
 	  try {
 		const comment = await createPaymentComment(amount);
 		const payloadBase64 = await encodeCommentToPayload(comment);
-		
 		const marketWalletAddress = "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_";
-		
 		const transaction = {
 		  validUntil: Math.floor(Date.now() / 1000) + 300,
 		  messages: [
@@ -1135,25 +1069,20 @@
 			}
 		  ]
 		};
-		
 		console.log('Отправляем транзакцию с комментарием:', comment);
 		const result = await tonConnectUI.sendTransaction(transaction);
-		
 		console.log('✅ Транзакция отправлена успешно:', result);
 		closeReplenishModal();
 		alert(`✅ Транзакция отправлена! ${amount} TON будут зачислены после подтверждения.`);
-		
 	  } catch (error) {
 		console.error('❌ Ошибка при отправке транзакции:', error);
 	  }
 	}
-
 	function disconnectWallet() {
 	  if (tonConnectUI) {
 		tonConnectUI.disconnect();
 	  }
 	}
-
 	function preloadIcons() {
 	  const icons = [
 		'https://accent-frontend.vercel.app/market-icon.png',
@@ -1168,16 +1097,13 @@
 		'https://accent-frontend.vercel.app/chat-icon.png',
 		'https://accent-frontend.vercel.app/bot-icon.png'
 	  ];
-	  
 	  icons.forEach(src => {
 		const img = new Image();
 		img.src = src;
 	  });
 	}
-
 	async function fetchUserBalance() {
 	  if (!telegramId) return;
-	  
 	  try {
 		const response = await fetch(`${API_BASE_URL}/user?telegram_id=${telegramId}`);
 		if (response.ok) {
@@ -1195,35 +1121,27 @@
 		updateBalanceDisplay();
 	  }
 	}
-
 	function updateBalanceDisplay() {
 	  const profileEl = document.getElementById('profile-balance');
 	  const headerEl = document.getElementById('header-balance');
 	  const formatted = userBalance.toFixed(2);
-	  
 	  if (profileEl) {
 		profileEl.textContent = `${formatted} TON`;
 	  }
-	  
 	  if (headerEl) {
 		headerEl.textContent = `+ ${formatted} TON`;
 	  }
 	}
-
 	function renderGifts(type) {
 	  const container = document.getElementById('gift-list');
 	  container.innerHTML = '';
-	  
 	  let items = type === 'channels' ? [...giftsData.channels] : [...giftsData.nft];
-	  
 	  if (selectedModels.length > 0) {
 		items = items.filter(item => 
 		  selectedModels.some(model => model.name.toLowerCase() === item.name.toLowerCase())
 		);
 	  }
-	  
 	  items = items.filter(item => item.price >= minPrice && item.price <= maxPrice);
-	  
 	  items.sort((a, b) => {
 		if (sortMethod === 'asc') {
 		  return a.price - b.price;
@@ -1231,15 +1149,12 @@
 		  return b.price - a.price;
 		}
 	  });
-	  
 	  items.forEach(item => {
 		const card = document.createElement('div');
 		card.className = 'gift-card';
-		
 		const iconHtml = item.icon 
 		  ? `<img src="${item.icon}" alt="${item.name}" class="gift-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
 		  : '';
-		
 		card.innerHTML = `
 		  <div class="gift-image">
 			${iconHtml}
@@ -1252,15 +1167,12 @@
 		card.addEventListener('click', () => openGiftModal(item, type));
 		container.appendChild(card);
 	  });
-	  
 	  updateAppliedFilters();
 	}
-
 	function openGiftModal(item, type) {
 	  document.getElementById('modal-emoji').textContent = item.emoji;
 	  document.getElementById('modal-name').textContent = item.name;
 	  document.getElementById('modal-price').textContent = `${item.price} TON`;
-	  
 	  const qtyEl = document.getElementById('modal-qty');
 	  if (type === 'channels') {
 		qtyEl.textContent = `${item.qty} шт.`;
@@ -1268,14 +1180,12 @@
 	  } else {
 		qtyEl.style.display = 'none';
 	  }
-	  
 	  const btns = document.getElementById('modal-buttons');
 	  if (type === 'channels') {
 		btns.innerHTML = `
 		  <button class="modal-btn btn-channel" data-channel="${item.channel}">Открыть канал</button>
 		  <button class="modal-btn btn-buy">Купить канал</button>
 		`;
-		
 		setTimeout(() => {
 		  document.querySelector('.btn-channel').addEventListener('click', (e) => {
 			const channel = e.target.dataset.channel;
@@ -1287,36 +1197,28 @@
 	  } else {
 		btns.innerHTML = `<button class="modal-btn btn-nft">Купить NFT</button>`;
 	  }
-	  
 	  document.getElementById('gift-modal').classList.add('open');
 	}
-
 	function closeGiftModal() {
 	  document.getElementById('gift-modal').classList.remove('open');
 	}
-
 	function openAddChannelModal() {
 	  document.getElementById('add-channel-modal').classList.add('open');
 	}
-
 	function closeAddChannelModal() {
 	  document.getElementById('add-channel-modal').classList.remove('open');
 	  document.getElementById('channel-username').value = '';
 	}
-
 	async function addChannel() {
 	  const channelUsername = document.getElementById('channel-username').value.trim();
-	  
 	  if (!channelUsername || !channelUsername.startsWith('@')) {
 		alert('Пожалуйста, введите корректный юзернейм канала (начинается с @)');
 		return;
 	  }
-	  
 	  if (!telegramId) {
 		alert('Ошибка авторизации. Пожалуйста, перезагрузите приложение.');
 		return;
 	  }
-	  
 	  try {
 		const response = await fetch(`${API_BASE_URL}/channels`, {
 		  method: 'POST',
@@ -1326,7 +1228,6 @@
 			channel_username: channelUsername
 		  })
 		});
-		
 		if (response.ok) {
 		  alert('✅ Канал успешно добавлен!');
 		  closeAddChannelModal();
@@ -1339,10 +1240,8 @@
 		alert('⚠️ Не удалось подключиться к серверу');
 	  }
 	}
-
 	function openReplenishModal() {
 	  document.getElementById('replenish-amount').value = '';
-	  
 	  const instructions = document.getElementById('replenish-instructions');
 	  if (instructions) {
 		if (isTonConnected) {
@@ -1368,40 +1267,73 @@
 		  `;
 		}
 	  }
-	  
 	  document.getElementById('replenish-modal').classList.add('open');
 	}
-
 	function closeReplenishModal() {
 	  document.getElementById('replenish-modal').classList.remove('open');
 	}
-
 	function setupEventListeners() {
-	  document.getElementById('modal-close').addEventListener('click', closeGiftModal);
-	  document.getElementById('gift-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('gift-modal')) {
-		  closeGiftModal();
-		}
-	  });
+	  const modalClose = document.getElementById('modal-close');
+	  if (modalClose) {
+		modalClose.addEventListener('click', closeGiftModal);
+	  }
 	  
-	  document.getElementById('replenish-close').addEventListener('click', closeReplenishModal);
-	  document.getElementById('replenish-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('replenish-modal')) {
-		  closeReplenishModal();
-		}
-	  });
+	  const giftModal = document.getElementById('gift-modal');
+	  if (giftModal) {
+		giftModal.addEventListener('click', (e) => {
+		  if (e.target === giftModal) {
+			closeGiftModal();
+		  }
+		});
+	  }
 	  
-	  document.getElementById('add-channel-close').addEventListener('click', closeAddChannelModal);
-	  document.getElementById('add-channel-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('add-channel-modal')) {
-		  closeAddChannelModal();
-		}
-	  });
+	  const replenishClose = document.getElementById('replenish-close');
+	  if (replenishClose) {
+		replenishClose.addEventListener('click', closeReplenishModal);
+	  }
 	  
-	  document.getElementById('connect-wallet-btn').addEventListener('click', openTonConnectModal);
-	  document.getElementById('disconnect-wallet').addEventListener('click', disconnectWallet);
-	  document.getElementById('confirm-replenish').addEventListener('click', replenishWithTon);
-	  document.getElementById('submit-channel').addEventListener('click', addChannel);
+	  const replenishModal = document.getElementById('replenish-modal');
+	  if (replenishModal) {
+		replenishModal.addEventListener('click', (e) => {
+		  if (e.target === replenishModal) {
+			closeReplenishModal();
+		  }
+		});
+	  }
+	  
+	  const addChannelClose = document.getElementById('add-channel-close');
+	  if (addChannelClose) {
+		addChannelClose.addEventListener('click', closeAddChannelModal);
+	  }
+	  
+	  const addChannelModal = document.getElementById('add-channel-modal');
+	  if (addChannelModal) {
+		addChannelModal.addEventListener('click', (e) => {
+		  if (e.target === addChannelModal) {
+			closeAddChannelModal();
+		  }
+		});
+	  }
+	  
+	  const connectWalletBtn = document.getElementById('connect-wallet-btn');
+	  if (connectWalletBtn) {
+		connectWalletBtn.addEventListener('click', openTonConnectModal);
+	  }
+	  
+	  const disconnectWalletBtn = document.getElementById('disconnect-wallet');
+	  if (disconnectWalletBtn) {
+		disconnectWalletBtn.addEventListener('click', disconnectWallet);
+	  }
+	  
+	  const confirmReplenish = document.getElementById('confirm-replenish');
+	  if (confirmReplenish) {
+		confirmReplenish.addEventListener('click', replenishWithTon);
+	  }
+	  
+	  const createChannelOrderBtn = document.getElementById('create-channel-order-btn');
+	  if (createChannelOrderBtn) {
+		createChannelOrderBtn.addEventListener('click', addChannel);
+	  }
 	  
 	  document.querySelectorAll('.nav-item').forEach(item => {
 		item.addEventListener('click', () => {
@@ -1410,16 +1342,13 @@
 			const img = i.querySelector('.nav-icon img');
 			img.src = i.dataset.inactive;
 		  });
-		  
 		  item.classList.add('active');
 		  const activeImg = item.querySelector('.nav-icon img');
 		  activeImg.src = item.dataset.active;
-		  
 		  const tab = item.dataset.tab;
 		  ['market', 'my-gifts', 'activity', 'profile'].forEach(t => {
 			document.getElementById(`${t}-screen`).classList.toggle('hidden', t !== tab);
 		  });
-		  
 		  document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
 		});
 	  });
@@ -1429,7 +1358,6 @@
 		  const parent = tab.closest('.subtabs');
 		  parent.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
 		  tab.classList.add('active');
-		  
 		  const type = tab.dataset.subtab;
 		  if (parent.closest('#market-screen')) {
 			renderGifts(type === 'channels' ? 'channels' : 'nft');
@@ -1440,101 +1368,106 @@
 		});
 	  });
 	  
-	  document.getElementById('fab-btn').addEventListener('click', () => {
-		if (!document.getElementById('my-gifts-screen').classList.contains('hidden')) {
-		  openAddChannelModal();
-		}
-	  });
+	  const fabBtn = document.getElementById('fab-btn');
+	  if (fabBtn) {
+		fabBtn.addEventListener('click', () => {
+		  if (!document.getElementById('my-gifts-screen').classList.contains('hidden')) {
+			openAddChannelModal();
+		  }
+		});
+	  }
 	  
-	  document.getElementById('replenish-btn').addEventListener('click', () => {
-		if (!isTonConnected) {
-		  openTonConnectModal();
-		} else {
-		  openReplenishModal();
-		}
-	  });
+	  const replenishBtn = document.getElementById('replenish-btn');
+	  if (replenishBtn) {
+		replenishBtn.addEventListener('click', () => {
+		  if (!isTonConnected) {
+			openTonConnectModal();
+		  } else {
+			openReplenishModal();
+		  }
+		});
+	  }
 	  
-	  document.getElementById('header-balance').addEventListener('click', () => {
-		if (!isTonConnected) {
-		  openTonConnectModal();
-		} else {
-		  openReplenishModal();
-		}
-	  });
+	  const headerBalance = document.getElementById('header-balance');
+	  if (headerBalance) {
+		headerBalance.addEventListener('click', () => {
+		  if (!isTonConnected) {
+			openTonConnectModal();
+		  } else {
+			openReplenishModal();
+		  }
+		});
+	  }
 	}
-
 	function initFilters() {
-	  document.getElementById('model-filter').addEventListener('click', () => {
-		renderModelList();
-		document.getElementById('model-modal').classList.add('open');
-	  });
-	  
-	  document.getElementById('model-close').addEventListener('click', () => {
-		document.getElementById('model-modal').classList.remove('open');
-	  });
-	  
-	  document.getElementById('price-filter').addEventListener('click', () => {
-		document.getElementById('min-price').value = minPrice;
-		document.getElementById('max-price').value = maxPrice;
-		updateRangeSlider();
-		document.getElementById('price-modal').classList.add('open');
-	  });
-	  
-	  document.getElementById('price-close').addEventListener('click', () => {
-		document.getElementById('price-modal').classList.remove('open');
-	  });
-	  
-	  document.getElementById('sort-filter').addEventListener('click', () => {
-		document.querySelectorAll('.sort-item').forEach(item => {
-		  item.classList.remove('active');
+	  const priceFilter = document.getElementById('price-filter');
+	  if (priceFilter) {
+		priceFilter.addEventListener('click', () => {
+		  document.getElementById('min-price').value = minPrice;
+		  document.getElementById('max-price').value = maxPrice;
+		  updateRangeSlider();
+		  document.getElementById('price-modal').classList.add('open');
 		});
-		document.querySelector(`.sort-item[data-sort="${sortMethod}"]`).classList.add('active');
-		document.getElementById('sort-modal').classList.add('open');
-	  });
+	  }
 	  
-	  document.getElementById('sort-close').addEventListener('click', () => {
-		document.getElementById('sort-modal').classList.remove('open');
-	  });
-	  
-	  document.getElementById('apply-models').addEventListener('click', () => {
-		document.getElementById('model-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
-	  
-	  document.getElementById('clear-models').addEventListener('click', () => {
-		selectedModels = [];
-		document.querySelectorAll('.filter-item').forEach(item => {
-		  item.classList.remove('active');
+	  const priceClose = document.getElementById('price-close');
+	  if (priceClose) {
+		priceClose.addEventListener('click', () => {
+		  document.getElementById('price-modal').classList.remove('open');
 		});
-	  });
+	  }
 	  
-	  document.getElementById('apply-prices').addEventListener('click', () => {
-		minPrice = parseInt(document.getElementById('min-price').value) || 1;
-		maxPrice = parseInt(document.getElementById('max-price').value) || 99999;
-		
-		minPrice = Math.max(1, Math.min(minPrice, 99999));
-		maxPrice = Math.max(1, Math.min(maxPrice, 99999));
-		
-		if (minPrice > maxPrice) {
-		  [minPrice, maxPrice] = [maxPrice, minPrice];
-		}
-		
-		document.getElementById('price-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
+	  const sortFilter = document.getElementById('sort-filter');
+	  if (sortFilter) {
+		sortFilter.addEventListener('click', () => {
+		  document.querySelectorAll('.sort-item').forEach(item => {
+			item.classList.remove('active');
+		  });
+		  document.querySelector(`.sort-item[data-sort="${sortMethod}"]`).classList.add('active');
+		  document.getElementById('sort-modal').classList.add('open');
+		});
+	  }
 	  
-	  document.getElementById('clear-prices').addEventListener('click', () => {
-		minPrice = 1;
-		maxPrice = 99999;
-		document.getElementById('min-price').value = minPrice;
-		document.getElementById('max-price').value = maxPrice;
-		updateRangeSlider();
-	  });
+	  const sortClose = document.getElementById('sort-close');
+	  if (sortClose) {
+		sortClose.addEventListener('click', () => {
+		  document.getElementById('sort-modal').classList.remove('open');
+		});
+	  }
 	  
-	  document.getElementById('apply-sort').addEventListener('click', () => {
-		document.getElementById('sort-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
+	  const applyPrices = document.getElementById('apply-prices');
+	  if (applyPrices) {
+		applyPrices.addEventListener('click', () => {
+		  minPrice = parseInt(document.getElementById('min-price').value) || 1;
+		  maxPrice = parseInt(document.getElementById('max-price').value) || 99999;
+		  minPrice = Math.max(1, Math.min(minPrice, 99999));
+		  maxPrice = Math.max(1, Math.min(maxPrice, 99999));
+		  if (minPrice > maxPrice) {
+			[maxPrice, minPrice] = [minPrice, maxPrice];
+		  }
+		  document.getElementById('price-modal').classList.remove('open');
+		  renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+		});
+	  }
+	  
+	  const clearPrices = document.getElementById('clear-prices');
+	  if (clearPrices) {
+		clearPrices.addEventListener('click', () => {
+		  minPrice = 1;
+		  maxPrice = 99999;
+		  document.getElementById('min-price').value = minPrice;
+		  document.getElementById('max-price').value = maxPrice;
+		  updateRangeSlider();
+		});
+	  }
+	  
+	  const applySort = document.getElementById('apply-sort');
+	  if (applySort) {
+		applySort.addEventListener('click', () => {
+		  document.getElementById('sort-modal').classList.remove('open');
+		  renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+		});
+	  }
 	  
 	  document.querySelectorAll('.sort-item').forEach(item => {
 		item.addEventListener('click', () => {
@@ -1544,45 +1477,32 @@
 		});
 	  });
 	  
-	  document.addEventListener('click', (e) => {
-		if (e.target.classList.contains('filter-item') || e.target.closest('.filter-item')) {
-		  const item = e.target.closest('.filter-item');
-		  const modelId = item.dataset.model;
-		  const model = giftsData.allModels.find(m => m.id === modelId);
-		  
-		  if (item.classList.contains('active')) {
-			item.classList.remove('active');
-			selectedModels = selectedModels.filter(m => m.id !== modelId);
-		  } else {
-			item.classList.add('active');
-			selectedModels.push(model);
-		  }
-		}
-	  });
+	  updateRangeSlider();
 	}
-
-	function renderModelList() {
-	  const container = document.getElementById('model-list');
-	  container.innerHTML = '';
+	function updateRangeSlider() {
+	  const minPriceInput = document.getElementById('min-price');
+	  const maxPriceInput = document.getElementById('max-price');
+	  const rangeProgress = document.getElementById('range-progress');
+	  const minThumb = document.getElementById('min-thumb');
+	  const maxThumb = document.getElementById('max-thumb');
 	  
-	  giftsData.allModels.forEach(model => {
-		const isActive = selectedModels.some(m => m.id === model.id);
-		
-		const item = document.createElement('div');
-		item.className = `filter-item ${isActive ? 'active' : ''}`;
-		item.dataset.model = model.id;
-		item.innerHTML = `
-		  <div class="gift-icon">${model.emoji}</div>
-		  <div>${model.name}</div>
-		`;
-		container.appendChild(item);
-	  });
+	  if (!minPriceInput || !maxPriceInput || !rangeProgress || !minThumb || !maxThumb) return;
+	  
+	  const minVal = parseInt(minPriceInput.value) || 1;
+	  const maxVal = parseInt(maxPriceInput.value) || 99999;
+	  
+	  const minPct = ((minVal - 1) / (99999 - 1)) * 100;
+	  const maxPct = ((maxVal - 1) / (99999 - 1)) * 100;
+	  
+	  rangeProgress.style.left = minPct + '%';
+	  rangeProgress.style.right = (100 - maxPct) + '%';
+	  
+	  minThumb.style.left = minPct + '%';
+	  maxThumb.style.left = maxPct + '%';
 	}
-
 	function updateAppliedFilters() {
 	  const container = document.getElementById('applied-filters');
 	  container.innerHTML = '';
-	  
 	  selectedModels.forEach(model => {
 		const filter = document.createElement('div');
 		filter.className = 'applied-filter';
@@ -1593,7 +1513,6 @@
 		`;
 		container.appendChild(filter);
 	  });
-	  
 	  if (minPrice > 1 || maxPrice < 99999) {
 		const filter = document.createElement('div');
 		filter.className = 'applied-filter';
@@ -1603,7 +1522,6 @@
 		`;
 		container.appendChild(filter);
 	  }
-	  
 	  if (sortMethod !== 'asc') {
 		const filter = document.createElement('div');
 		filter.className = 'applied-filter';
@@ -1613,13 +1531,11 @@
 		`;
 		container.appendChild(filter);
 	  }
-	  
 	  document.querySelectorAll('.remove-filter').forEach(btn => {
 		btn.addEventListener('click', (e) => {
 		  e.stopPropagation();
 		  const filterType = btn.dataset.filter;
 		  const modelId = btn.dataset.model;
-		  
 		  if (filterType === 'price') {
 			minPrice = 1;
 			maxPrice = 99999;
@@ -1628,28 +1544,24 @@
 		  } else if (modelId) {
 			selectedModels = selectedModels.filter(m => m.id !== modelId);
 		  }
-		  
 		  renderGifts(document.querySelector('.subtab.active').dataset.subtab);
 		});
 	  });
 	}
-
 	function adjustContentHeight() {
 	  const header = document.querySelector('.header');
 	  const footer = document.querySelector('.footer-nav');
 	  const content = document.querySelector('.content');
-	  
 	  if (header && footer && content) {
 		const headerHeight = header.offsetHeight;
 		const footerHeight = footer.offsetHeight;
 		const newHeight = window.innerHeight - (headerHeight + footerHeight);
 		content.style.height = `${newHeight}px`;
+		content.style.overflowY = 'auto';
 	  }
 	}
-
 	window.addEventListener('load', adjustContentHeight);
 	window.addEventListener('resize', adjustContentHeight);
-
 	if (window.Telegram && Telegram.WebApp) {
 	  Telegram.WebApp.ready();
 	  Telegram.WebApp.expand();
