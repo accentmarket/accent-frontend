@@ -869,857 +869,327 @@
 	let wallet = null;
 	let isTonConnected = false;
 
-	let selectedModels = [];
-	let minPrice = 1;
-	let maxPrice = 99999;
-	let sortMethod = 'asc';
-
-	// Демо-данные для отображения (временные)
 	const giftsData = {
-	  channels: [
-		{ 
-		  id: 1, 
-		  name: "Music Channel", 
-		  emoji: "📺", 
-		  price: 45.2, 
-		  channel: "@music_lovers",
-		  gifts: ["🎵", "🎸", "🎧"]
-		},
-		{ 
-		  id: 2, 
-		  name: "Crypto News", 
-		  emoji: "📺", 
-		  price: 32.8, 
-		  channel: "@crypto_news",
-		  gifts: ["₿", "💎", "🚀"]
-		},
-		{ 
-		  id: 3, 
-		  name: "Art Gallery", 
-		  emoji: "📺", 
-		  price: 78.5, 
-		  channel: "@art_gallery", 
-		  gifts: ["🎨", "🖼️", "✨"]
-		}
-	  ],
-	  nft: [
-		{ 
-		  id: 11, 
-		  name: "VIP Club", 
-		  emoji: "🖼️", 
-		  price: 120.0, 
-		  channel: "@vip_club",
-		  gifts: ["👑", "⭐", "💎"]
-		}
-	  ],
-	  allModels: [
-		{ id: "music", emoji: "🎵", name: "Music" },
-		{ id: "crypto", emoji: "₿", name: "Crypto" },
-		{ id: "art", emoji: "🎨", name: "Art" },
-		{ id: "vip", emoji: "👑", name: "VIP" },
-	  ]
+	channels: [
+	{ id: 1, name: "Rose", emoji: "🌹", price: 4.2, qty: 3 },
+	{ id: 2, name: "Fire", emoji: "🔥", price: 6.8, qty: 1 },
+	{ id: 3, name: "Crown", emoji: "👑", price: 12.0, qty: 5 },
+	{ id: 4, name: "Star", emoji: "⭐", price: 3.5, qty: 2 },
+	{ id: 5, name: "Lion", emoji: "🦁", price: 8.9, qty: 1 },
+	{ id: 6, name: "Unicorn", emoji: "🦄", price: 15.5, qty: 2 },
+	],
+	nft: [
+	{ id: 11, name: "Rose+", emoji: "🌹", price: 8.5 },
+	{ id: 12, name: "Inferno", emoji: "🔥", price: 15.0 },
+	{ id: 13, name: "Galaxy", emoji: "🌌", price: 22.0 },
+	{ id: 14, name: "Dragon", emoji: "🐉", price: 30.0 },
+	]
 	};
 
 	document.addEventListener('DOMContentLoaded', () => {
-	  if (window.Telegram && Telegram.WebApp) {
-		Telegram.WebApp.ready();
-		Telegram.WebApp.expand();
-		
-		if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-		  telegramUser = Telegram.WebApp.initDataUnsafe.user;
-		  telegramId = parseInt(telegramUser.id);
-		  
-		  document.getElementById('user-name').textContent = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'Пользователь';
-		  document.getElementById('user-username').textContent = telegramUser.username ? `@${telegramUser.username}` : 'Без юзернейма';
-		  
-		  updateUserAvatar(telegramUser);
-		}
-	  }
-	  
-	  initTonConnect();
-	  renderGifts('channels');
-	  setupEventListeners();
-	  fetchUserBalance();
-	  preloadIcons();
-	  initFilters();
-	  adjustContentHeight();
+	if (window.Telegram && Telegram.WebApp) {
+	Telegram.WebApp.ready();
+	Telegram.WebApp.expand();
+
+	if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+	telegramUser = Telegram.WebApp.initDataUnsafe.user;
+	telegramId = parseInt(telegramUser.id);
+
+	document.getElementById('user-name').textContent = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'Пользователь';
+	document.getElementById('user-username').textContent = telegramUser.username ? `@${telegramUser.username}` : 'Без юзернейма';
+
+	updateUserAvatar(telegramUser);
+	}
+	}
+
+	initTonConnect();
+	renderGifts('channels');
+	setupEventListeners();
+	fetchUserBalance();
+	adjustContentHeight();
 	});
 
 	function updateUserAvatar(user) {
-	  const avatarEl = document.getElementById('user-avatar');
-	  if (!avatarEl) return;
-	  
-	  avatarEl.innerHTML = '';
-	  
-	  if (user.photo_url) {
-		const img = document.createElement('img');
-		img.src = user.photo_url;
-		img.alt = 'Аватар';
-		img.onerror = function() {
-		  showAvatarLetter(avatarEl, user);
-		};
-		avatarEl.appendChild(img);
-	  } else {
-		showAvatarLetter(avatarEl, user);
-	  }
-	}
+	const avatarEl = document.getElementById('user-avatar');
+	if (!avatarEl) return;
 
-	function showAvatarLetter(avatarEl, user) {
-	  const letter = user.first_name ? user.first_name[0].toUpperCase() : 
-					(user.username ? user.username[0].toUpperCase() : 'U');
-	  
-	  avatarEl.textContent = letter;
-	  avatarEl.style.display = 'flex';
-	  avatarEl.style.alignItems = 'center';
-	  avatarEl.style.justifyContent = 'center';
-	  avatarEl.style.background = 'var(--accent)';
-	  avatarEl.style.color = 'black';
-	  avatarEl.style.fontWeight = 'bold';
+	if (user.photo_url) {
+	avatarEl.innerHTML = `<img src="${user.photo_url}" alt="Аватар" style="width: 100%; height: 100%; object-fit: cover;">`;
+	} else {
+	const letter = user.first_name ? user.first_name[0].toUpperCase() : 'U';
+	avatarEl.textContent = letter;
+	avatarEl.style.background = 'var(--accent)';
+	avatarEl.style.color = 'black';
+	avatarEl.style.display = 'flex';
+	avatarEl.style.alignItems = 'center';
+	avatarEl.style.justifyContent = 'center';
+	avatarEl.style.fontWeight = 'bold';
+	}
 	}
 
 	function initTonConnect() {
-	  try {
-		if (typeof TON_CONNECT_UI === 'undefined') {
-		  console.error('TON Connect UI не загружен');
-		  return;
-		}
-		
-		const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
-		
-		tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-		  manifestUrl: manifestUrl,
-		  actionsConfiguration: {
-			twaReturnUrl: 'https://t.me/accentmarketbot'
-		  }
-		});
-		
-		tonConnectUI.onStatusChange(async (walletInfo) => {
-		  if (walletInfo) {
-			wallet = walletInfo;
-			isTonConnected = true;
-			console.log('TON кошелек подключен:', walletInfo);
-			updateWalletUI();
-			await fetchTonWalletBalance();
-		  } else {
-			wallet = null;
-			isTonConnected = false;
-			console.log('TON кошелек отключен');
-			updateWalletUI();
-		  }
-		});
-		
-		tonConnectUI.connectionRestored.then(() => {
-		  console.log('Состояние подключения восстановлено');
-		});
-		
-	  } catch (error) {
-		console.error('Ошибка инициализации TON Connect:', error);
-	  }
+	try {
+	const manifestUrl = 'https://accent-frontend.vercel.app/tonconnect-manifest.json';
+
+	tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+	manifestUrl: manifestUrl,
+	actionsConfiguration: {
+	twaReturnUrl: 'https://t.me/accentmarketbot'
+	}
+	});
+
+	tonConnectUI.onStatusChange(async (walletInfo) => {
+	if (walletInfo) {
+	wallet = walletInfo;
+	isTonConnected = true;
+	updateWalletUI();
+	} else {
+	wallet = null;
+	isTonConnected = false;
+	updateWalletUI();
+	}
+	});
+
+	} catch (error) {
+	console.error('Ошибка инициализации TON Connect:', error);
+	}
 	}
 
 	function updateWalletUI() {
-	  const headerBalance = document.getElementById('header-balance');
-	  const walletInfoSection = document.getElementById('wallet-info');
-	  const connectWalletSection = document.getElementById('connect-wallet-section');
-	  const walletAddress = document.getElementById('wallet-address');
-	  const replenishBtn = document.getElementById('replenish-btn');
-	  
-	  if (isTonConnected && wallet) {
-		const fullAddress = wallet.account.address;
-		
-		if (headerBalance) {
-		  headerBalance.classList.add('connected');
-		}
-		
-		if (walletInfoSection && connectWalletSection && walletAddress) {
-		  walletInfoSection.classList.remove('hidden');
-		  connectWalletSection.classList.add('hidden');
-		  walletAddress.textContent = fullAddress;
-		}
-		
-		if (replenishBtn) {
-		  replenishBtn.textContent = 'Пополнить через TON';
-		}
-	  } else {
-		if (headerBalance) {
-		  headerBalance.classList.remove('connected');
-		}
-		
-		if (walletInfoSection && connectWalletSection) {
-		  walletInfoSection.classList.add('hidden');
-		  connectWalletSection.classList.remove('hidden');
-		}
-		
-		if (replenishBtn) {
-		  replenishBtn.textContent = 'Подключить TON кошелек';
-		}
-	  }
-	  
-	  updateBalanceDisplay();
+	const walletInfoSection = document.getElementById('wallet-info');
+	const connectWalletSection = document.getElementById('connect-wallet-section');
+
+	if (isTonConnected && wallet) {
+	const walletAddress = document.getElementById('wallet-address');
+	if (walletAddress) {
+	walletAddress.textContent = wallet.account.address;
+	}
+
+	if (walletInfoSection && connectWalletSection) {
+	walletInfoSection.classList.remove('hidden');
+	connectWalletSection.classList.add('hidden');
+	}
+	} else {
+	if (walletInfoSection && connectWalletSection) {
+	walletInfoSection.classList.add('hidden');
+	connectWalletSection.classList.remove('hidden');
+	}
+	}
 	}
 
 	function openTonConnectModal() {
-	  if (tonConnectUI) {
-		tonConnectUI.openModal();
-	  } else {
-		console.error('TON Connect UI не инициализирован');
-	  }
+	if (tonConnectUI) {
+	tonConnectUI.openModal();
 	}
-
-	async function fetchTonWalletBalance() {
-	  if (!wallet || !wallet.provider) {
-		console.log('Кошелек не подключен');
-		return;
-	  }
-	  
-	  try {
-		const balance = await wallet.provider.getBalance(wallet.account.address);
-		const tonBalance = parseFloat(balance) / 1000000000;
-		
-		const tonWalletBalanceEl = document.getElementById('ton-wallet-balance');
-		if (tonWalletBalanceEl) {
-		  tonWalletBalanceEl.textContent = tonBalance.toFixed(2);
-		}
-		
-		console.log('Баланс TON кошелька:', tonBalance);
-	  } catch (error) {
-		console.error('Ошибка получения баланса TON кошелька:', error);
-	  }
-	}
-
-	async function createPaymentComment(amount) {
-	  try {
-		const response = await fetch(`${API_BASE_URL}/payments`, {
-		  method: 'POST',
-		  headers: { 'Content-Type': 'application/json' },
-		  body: JSON.stringify({
-			telegram_id: telegramId,
-			amount: amount
-		  })
-		});
-		
-		if (!response.ok) {
-		  throw new Error('Не удалось создать платеж');
-		}
-		
-		const paymentData = await response.json();
-		return paymentData.comment;
-	  } catch (error) {
-		console.error('Ошибка создания платежа:', error);
-		throw error;
-	  }
-	}
-
-	async function encodeCommentToPayload(comment) {
-	  try {
-		const tonweb = new TonWeb();
-		const commentCell = new TonWeb.boc.Cell();
-		commentCell.bits.writeUint(0, 32);
-		commentCell.bits.writeString(comment);
-		const payloadBase64 = await commentCell.toBoc().then(boc => TonWeb.utils.bytesToBase64(boc));
-		return payloadBase64;
-	  } catch (error) {
-		console.error('Ошибка кодирования комментария:', error);
-		throw error;
-	  }
-	}
-
-	async function replenishWithTon() {
-	  if (!isTonConnected || !wallet) {
-		openTonConnectModal();
-		return;
-	  }
-	  
-	  const amountStr = document.getElementById('replenish-amount').value.trim();
-	  const amount = parseFloat(amountStr);
-	  
-	  if (isNaN(amount) || amount < 0.1) {
-		alert('Пожалуйста, введите корректную сумму (минимум 0.1 TON)');
-		return;
-	  }
-	  
-	  try {
-		const comment = await createPaymentComment(amount);
-		const payloadBase64 = await encodeCommentToPayload(comment);
-		
-		const marketWalletAddress = "EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_";
-		
-		const transaction = {
-		  validUntil: Math.floor(Date.now() / 1000) + 300,
-		  messages: [
-			{
-			  address: marketWalletAddress,
-			  amount: (amount * 1000000000).toString(),
-			  payload: payloadBase64
-			}
-		  ]
-		};
-		
-		console.log('Отправляем транзакцию с комментарием:', comment);
-		const result = await tonConnectUI.sendTransaction(transaction);
-		
-		console.log('✅ Транзакция отправлена успешно:', result);
-		closeReplenishModal();
-		alert(`✅ Транзакция отправлена! ${amount} TON будут зачислены после подтверждения.`);
-		
-	  } catch (error) {
-		console.error('❌ Ошибка при отправке транзакции:', error);
-	  }
-	}
-
-	function disconnectWallet() {
-	  if (tonConnectUI) {
-		tonConnectUI.disconnect();
-	  }
-	}
-
-	function preloadIcons() {
-	  const icons = [
-		'https://accent-frontend.vercel.app/market-icon.png',
-		'https://accent-frontend.vercel.app/market-icon-active.png',
-		'https://accent-frontend.vercel.app/gift-icon.png',
-		'https://accent-frontend.vercel.app/gift-icon-active.png',
-		'https://accent-frontend.vercel.app/activity.png',
-		'https://accent-frontend.vercel.app/activity-active.png',
-		'https://accent-frontend.vercel.app/profile.png',
-		'https://accent-frontend.vercel.app/profile-active.png',
-		'https://accent-frontend.vercel.app/channel-icon.png',
-		'https://accent-frontend.vercel.app/chat-icon.png',
-		'https://accent-frontend.vercel.app/bot-icon.png'
-	  ];
-	  
-	  icons.forEach(src => {
-		const img = new Image();
-		img.src = src;
-	  });
 	}
 
 	async function fetchUserBalance() {
-	  if (!telegramId) return;
-	  
-	  try {
-		const response = await fetch(`${API_BASE_URL}/user?telegram_id=${telegramId}`);
-		if (response.ok) {
-		  const data = await response.json();
-		  userBalance = parseFloat(data.balance) || 0.00;
-		  updateBalanceDisplay();
-		} else {
-		  console.error('Не удалось загрузить баланс');
-		  userBalance = 0.00;
-		  updateBalanceDisplay();
-		}
-	  } catch (error) {
-		console.error('Ошибка при получении баланса:', error);
-		userBalance = 0.00;
-		updateBalanceDisplay();
-	  }
+	if (!telegramId) return;
+
+	try {
+	const response = await fetch(`${API_BASE_URL}/user?telegram_id=${telegramId}`);
+	if (response.ok) {
+	const data = await response.json();
+	userBalance = parseFloat(data.balance) || 0.00;
+	updateBalanceDisplay();
+	}
+	} catch (error) {
+	console.error('Ошибка при получении баланса:', error);
+	userBalance = 0.00;
+	updateBalanceDisplay();
+	}
 	}
 
 	function updateBalanceDisplay() {
-	  const profileEl = document.getElementById('profile-balance');
-	  const headerEl = document.getElementById('header-balance');
-	  const formatted = userBalance.toFixed(2);
-	  
-	  if (profileEl) {
-		profileEl.textContent = `${formatted} TON`;
-	  }
-	  
-	  if (headerEl) {
-		headerEl.textContent = `+ ${formatted} TON`;
-	  }
+	const profileEl = document.getElementById('profile-balance');
+	const headerEl = document.getElementById('header-balance');
+	const formatted = userBalance.toFixed(2);
+
+	if (profileEl) profileEl.textContent = `${formatted} TON`;
+	if (headerEl) headerEl.textContent = `+ ${formatted} TON`;
 	}
 
-	// ОСНОВНАЯ ФУНКЦИЯ РЕНДЕРИНГА КАНАЛОВ
 	function renderGifts(type) {
-	  const container = document.getElementById('gift-list');
-	  container.innerHTML = '';
-	  
-	  let items = type === 'channels' ? [...giftsData.channels] : [...giftsData.nft];
-	  
-	  if (selectedModels.length > 0) {
-		items = items.filter(item => 
-		  selectedModels.some(model => 
-			item.name.toLowerCase().includes(model.name.toLowerCase())
-		  )
-		);
-	  }
-	  
-	  items = items.filter(item => item.price >= minPrice && item.price <= maxPrice);
-	  
-	  items.sort((a, b) => {
-		if (sortMethod === 'asc') {
-		  return a.price - b.price;
-		} else {
-		  return b.price - a.price;
-		}
-	  });
-	  
-	  if (items.length === 0) {
-		container.innerHTML = `
-		  <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary); grid-column: 1 / -1;">
-			<div style="font-size: 48px; margin-bottom: 10px;">📺</div>
-			<div>Каналов не найдено</div>
-			<div style="font-size: 12px; margin-top: 10px;">Попробуйте изменить фильтры</div>
-		  </div>
-		`;
-		return;
-	  }
-	  
-	  items.forEach(item => {
-		const card = document.createElement('div');
-		card.className = 'gift-card';
-		
-		const giftsHtml = item.gifts ? 
-		  item.gifts.map(gift => `<span style="font-size: 20px; margin: 0 2px;">${gift}</span>`).join('') : 
-		  '🎁';
-		
-		card.innerHTML = `
-		  <div class="gift-image">
-			<div style="font-size: 40px;">${item.emoji}</div>
-		  </div>
-		  <div class="gift-name">${item.name}</div>
-		  <div style="margin: 8px 0; font-size: 20px;">
-			${giftsHtml}
-		  </div>
-		  <div class="gift-price">${item.price} TON</div>
-		  <div class="gift-qty">${item.channel}</div>
-		`;
-		
-		card.addEventListener('click', () => openGiftModal(item, type));
-		container.appendChild(card);
-	  });
-	  
-	  updateAppliedFilters();
+	const container = document.getElementById('gift-list');
+	container.innerHTML = '';
+
+	const items = type === 'channels' ? giftsData.channels : giftsData.nft;
+
+	items.forEach(item => {
+	const card = document.createElement('div');
+	card.className = 'gift-card';
+	card.innerHTML = `
+	<div class="gift-image">
+	<div class="gift-emoji">${item.emoji}</div>
+	</div>
+	<div class="gift-name">${item.name}</div>
+	<div class="gift-price">${item.price} TON</div>
+	${type === 'channels' ? `<div class="gift-qty">${item.qty} шт.</div>` : ''}
+	`;
+	card.addEventListener('click', () => openGiftModal(item, type));
+	container.appendChild(card);
+	});
 	}
 
 	function openGiftModal(item, type) {
-	  document.getElementById('modal-emoji').textContent = item.emoji;
-	  document.getElementById('modal-name').textContent = item.name;
-	  document.getElementById('modal-price').textContent = `${item.price} TON`;
-	  
-	  const qtyEl = document.getElementById('modal-qty');
-	  qtyEl.innerHTML = `
-		<div>Канал: ${item.channel}</div>
-		<div>Подарки: ${item.gifts ? item.gifts.join(' ') : 'Не указаны'}</div>
-	  `;
-	  qtyEl.style.display = 'block';
-	  
-	  const btns = document.getElementById('modal-buttons');
-	  if (type === 'channels') {
-		btns.innerHTML = `
-		  <button class="modal-btn btn-channel" data-channel="${item.channel}">👀 Посмотреть канал</button>
-		  <button class="modal-btn btn-buy">💰 Купить канал</button>
-		`;
-		
-		setTimeout(() => {
-		  document.querySelector('.btn-channel').addEventListener('click', (e) => {
-			const channel = e.target.dataset.channel;
-			if (channel) {
-			  Telegram.WebApp.openTelegramLink(`https://t.me/${channel.replace('@', '')}`);
-			}
-		  });
-		}, 100);
-	  } else {
-		btns.innerHTML = `<button class="modal-btn btn-nft">💰 Купить NFT</button>`;
-	  }
-	  
-	  document.getElementById('gift-modal').classList.add('open');
+	document.getElementById('modal-emoji').textContent = item.emoji;
+	document.getElementById('modal-name').textContent = item.name;
+	document.getElementById('modal-price').textContent = `${item.price} TON`;
+
+	const qtyEl = document.getElementById('modal-qty');
+	if (type === 'channels') {
+	qtyEl.textContent = `${item.qty} шт.`;
+	qtyEl.style.display = 'block';
+	} else {
+	qtyEl.style.display = 'none';
+	}
+
+	const btns = document.getElementById('modal-buttons');
+	btns.innerHTML = type === 'channels' 
+	? `<button class="modal-btn btn-buy">Купить подарок</button>`
+	: `<button class="modal-btn btn-nft">Купить NFT</button>`;
+
+	document.getElementById('gift-modal').classList.add('open');
 	}
 
 	function closeGiftModal() {
-	  document.getElementById('gift-modal').classList.remove('open');
+	document.getElementById('gift-modal').classList.remove('open');
 	}
 
-	// ФУНКЦИИ ДЛЯ ДОБАВЛЕНИЯ КАНАЛА
 	function openAddChannelModal() {
-	  document.getElementById('add-channel-modal').classList.add('open');
+	document.getElementById('add-channel-modal').classList.add('open');
 	}
 
 	function closeAddChannelModal() {
-	  document.getElementById('add-channel-modal').classList.remove('open');
-	  document.getElementById('channel-username').value = '@';
-	  document.getElementById('channel-price').value = '';
+	document.getElementById('add-channel-modal').classList.remove('open');
+	document.getElementById('channel-username').value = '';
 	}
 
 	async function addChannel() {
-	  const channelUsername = document.getElementById('channel-username').value.trim();
-	  const price = parseFloat(document.getElementById('channel-price').value);
-	  
-	  if (!channelUsername || !channelUsername.startsWith('@')) {
-		alert('Пожалуйста, введите корректный юзернейм канала (начинается с @)');
-		return;
-	  }
-	  
-	  if (!price || price < 0.1) {
-		alert('Пожалуйста, введите корректную цену (минимум 0.1 TON)');
-		return;
-	  }
-	  
-	  if (!telegramId) {
-		alert('Ошибка авторизации. Пожалуйста, перезагрузите приложение.');
-		return;
-	  }
-	  
-	  try {
-		const response = await fetch(`${API_BASE_URL}/create_channel_order`, {
-		  method: 'POST',
-		  headers: { 'Content-Type': 'application/json' },
-		  body: JSON.stringify({
-			telegram_id: telegramId,
-			channel_username: channelUsername,
-			price_ton: price
-		  })
-		});
-		
-		if (response.ok) {
-		  const result = await response.json();
-		  alert('✅ Канал успешно выставлен на продажу!');
-		  closeAddChannelModal();
-		  
-		  // Обновляем список каналов
-		  refreshMarket();
-		} else {
-		  const error = await response.json();
-		  alert(`❌ Ошибка: ${error.detail || 'Не удалось добавить канал'}`);
-		}
-	  } catch (error) {
-		console.error('Ошибка при добавлении канала:', error);
-		alert('⚠️ Не удалось подключиться к серверу');
-	  }
+	const channelUsername = document.getElementById('channel-username').value.trim();
+
+	if (!channelUsername || !channelUsername.startsWith('@')) {
+	alert('Пожалуйста, введите корректный юзернейм канала (начинается с @)');
+	return;
+	}
+
+	if (!telegramId) {
+	alert('Ошибка авторизации');
+	return;
+	}
+
+	try {
+	const response = await fetch(`${API_BASE_URL}/channels`, {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({
+	telegram_id: telegramId,
+	channel_username: channelUsername
+	})
+	});
+
+	if (response.ok) {
+	alert('✅ Канал успешно добавлен!');
+	closeAddChannelModal();
+	} else {
+	const error = await response.json();
+	alert(`❌ Ошибка: ${error.detail || 'Не удалось добавить канал'}`);
+	}
+	} catch (error) {
+	console.error('Ошибка при добавлении канала:', error);
+	alert('⚠️ Не удалось подключиться к серверу');
+	}
 	}
 
 	function openReplenishModal() {
-	  document.getElementById('replenish-amount').value = '';
-	  
-	  const instructions = document.getElementById('replenish-instructions');
-	  if (instructions) {
-		if (isTonConnected) {
-		  instructions.innerHTML = `
-			<p><strong>Ваш TON кошелек подключен:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-			  ${wallet.account.address}
-			</p>
-			<p><strong>Пополнение на адрес маркетплейса:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px; margin: 8px 0;">
-			  EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_
-			</p>
-			<p>Введите сумму для пополнения баланса (минимум 0.1 TON)</p>
-		  `;
-		} else {
-		  instructions.innerHTML = `
-			<p>Для пополнения баланса необходимо подключить TON кошелек</p>
-			<p>После подключения кошелька вы сможете пополнить баланс</p>
-			<p><strong>Адрес маркетплейса для пополнения:</strong></p>
-			<p style="font-size: 12px; word-break: break-all; background: rgba(0,255,163,0.1); padding: 8px; border-radius: 8px;">
-			  EQABKYgrDffrxuBX6b6FYXfGph33tJYGkvmL4SuRbi435oU_
-			</p>
-		  `;
-		}
-	  }
-	  
-	  document.getElementById('replenish-modal').classList.add('open');
+	document.getElementById('replenish-modal').classList.add('open');
 	}
 
 	function closeReplenishModal() {
-	  document.getElementById('replenish-modal').classList.remove('open');
+	document.getElementById('replenish-modal').classList.remove('open');
 	}
 
-	// ОСНОВНЫЕ ОБРАБОТЧИКИ СОБЫТИЙ
+	function replenishBalance() {
+	if (!isTonConnected) {
+	openTonConnectModal();
+	return;
+	}
+	alert('Функция пополнения баланса в разработке');
+	closeReplenishModal();
+	}
+
 	function setupEventListeners() {
-	  document.getElementById('modal-close').addEventListener('click', closeGiftModal);
-	  document.getElementById('gift-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('gift-modal')) {
-		  closeGiftModal();
-		}
-	  });
-	  
-	  document.getElementById('replenish-close').addEventListener('click', closeReplenishModal);
-	  document.getElementById('replenish-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('replenish-modal')) {
-		  closeReplenishModal();
-		}
-	  });
-	  
-	  document.getElementById('add-channel-close').addEventListener('click', closeAddChannelModal);
-	  document.getElementById('add-channel-modal').addEventListener('click', (e) => {
-		if (e.target === document.getElementById('add-channel-modal')) {
-		  closeAddChannelModal();
-		}
-	  });
-	  
-	  document.getElementById('connect-wallet-btn').addEventListener('click', openTonConnectModal);
-	  document.getElementById('disconnect-wallet').addEventListener('click', disconnectWallet);
-	  document.getElementById('confirm-replenish').addEventListener('click', replenishWithTon);
-	  document.getElementById('submit-channel').addEventListener('click', addChannel);
-	  
-	  // Навигация по вкладкам
-	  document.querySelectorAll('.nav-item').forEach(item => {
-		item.addEventListener('click', () => {
-		  document.querySelectorAll('.nav-item').forEach(i => {
-			i.classList.remove('active');
-			const img = i.querySelector('.nav-icon img');
-			img.src = i.dataset.inactive;
-		  });
-		  
-		  item.classList.add('active');
-		  const activeImg = item.querySelector('.nav-icon img');
-		  activeImg.src = item.dataset.active;
-		  
-		  const tab = item.dataset.tab;
-		  ['market', 'my-gifts', 'activity', 'profile'].forEach(t => {
-			document.getElementById(`${t}-screen`).classList.toggle('hidden', t !== tab);
-		  });
-		  
-		  document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
-		});
-	  });
-	  
-	  // Подтабы (каналы/NFT)
-	  document.querySelectorAll('[data-subtab]').forEach(tab => {
-		tab.addEventListener('click', () => {
-		  const parent = tab.closest('.subtabs');
-		  parent.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
-		  tab.classList.add('active');
-		  
-		  const type = tab.dataset.subtab;
-		  if (parent.closest('#market-screen')) {
-			renderGifts(type === 'channels' ? 'channels' : 'nft');
-		  } else if (parent.closest('#my-gifts-screen')) {
-			document.getElementById('listed-content').classList.toggle('hidden', type !== 'listed');
-			document.getElementById('purchases-content').classList.toggle('hidden', type !== 'purchases');
-		  }
-		});
-	  });
-	  
-	  // Кнопка добавления канала
-	  document.getElementById('fab-btn').addEventListener('click', () => {
-		if (!document.getElementById('my-gifts-screen').classList.contains('hidden')) {
-		  openAddChannelModal();
-		}
-	  });
-	  
-	  // Кнопки пополнения баланса
-	  document.getElementById('replenish-btn').addEventListener('click', () => {
-		if (!isTonConnected) {
-		  openTonConnectModal();
-		} else {
-		  openReplenishModal();
-		}
-	  });
-	  
-	  document.getElementById('header-balance').addEventListener('click', () => {
-		if (!isTonConnected) {
-		  openTonConnectModal();
-		} else {
-		  openReplenishModal();
-		}
-	  });
+	document.getElementById('modal-close').addEventListener('click', closeGiftModal);
+	document.getElementById('add-channel-close').addEventListener('click', closeAddChannelModal);
+	document.getElementById('replenish-close').addEventListener('click', closeReplenishModal);
+
+	document.getElementById('gift-modal').addEventListener('click', (e) => {
+	if (e.target === document.getElementById('gift-modal')) closeGiftModal();
+	});
+	document.getElementById('add-channel-modal').addEventListener('click', (e) => {
+	if (e.target === document.getElementById('add-channel-modal')) closeAddChannelModal();
+	});
+	document.getElementById('replenish-modal').addEventListener('click', (e) => {
+	if (e.target === document.getElementById('replenish-modal')) closeReplenishModal();
+	});
+
+	document.getElementById('connect-wallet-btn').addEventListener('click', openTonConnectModal);
+	document.getElementById('disconnect-wallet').addEventListener('click', () => tonConnectUI?.disconnect());
+	document.getElementById('submit-channel').addEventListener('click', addChannel);
+	document.getElementById('confirm-replenish').addEventListener('click', replenishBalance);
+
+	document.querySelectorAll('.nav-item').forEach(item => {
+	item.addEventListener('click', () => {
+	const tab = item.dataset.tab;
+
+	document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+	item.classList.add('active');
+
+	document.querySelectorAll('[id$="-screen"]').forEach(screen => {
+	screen.classList.add('hidden');
+	});
+	document.getElementById(`${tab}-screen`).classList.remove('hidden');
+
+	document.getElementById('fab-btn').classList.toggle('hidden', tab !== 'my-gifts');
+	});
+	});
+
+	document.querySelectorAll('[data-subtab]').forEach(tab => {
+	tab.addEventListener('click', () => {
+	const parent = tab.closest('.subtabs');
+	parent.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
+	tab.classList.add('active');
+
+	const type = tab.dataset.subtab;
+	if (parent.closest('#market-screen')) {
+	renderGifts(type === 'channels' ? 'channels' : 'nft');
+	}
+	});
+	});
+
+	document.getElementById('fab-btn').addEventListener('click', openAddChannelModal);
+
+	document.getElementById('replenish-btn').addEventListener('click', openReplenishModal);
+	document.getElementById('header-balance').addEventListener('click', openReplenishModal);
 	}
 
-	// ФИЛЬТРЫ (оставляем базовые)
-	function initFilters() {
-	  document.getElementById('model-filter').addEventListener('click', () => {
-		renderModelList();
-		document.getElementById('model-modal').classList.add('open');
-	  });
-	  
-	  document.getElementById('model-close').addEventListener('click', () => {
-		document.getElementById('model-modal').classList.remove('open');
-	  });
-	  
-	  document.getElementById('price-filter').addEventListener('click', () => {
-		document.getElementById('min-price').value = minPrice;
-		document.getElementById('max-price').value = maxPrice;
-		updateRangeSlider();
-		document.getElementById('price-modal').classList.add('open');
-	  });
-	  
-	  document.getElementById('price-close').addEventListener('click', () => {
-		document.getElementById('price-modal').classList.remove('open');
-	  });
-	  
-	  document.getElementById('sort-filter').addEventListener('click', () => {
-		document.querySelectorAll('.sort-item').forEach(item => {
-		  item.classList.remove('active');
-		});
-		document.querySelector(`.sort-item[data-sort="${sortMethod}"]`).classList.add('active');
-		document.getElementById('sort-modal').classList.add('open');
-	  });
-	  
-	  document.getElementById('sort-close').addEventListener('click', () => {
-		document.getElementById('sort-modal').classList.remove('open');
-	  });
-	  
-	  // Применение фильтров
-	  document.getElementById('apply-models').addEventListener('click', () => {
-		document.getElementById('model-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
-	  
-	  document.getElementById('clear-models').addEventListener('click', () => {
-		selectedModels = [];
-		document.querySelectorAll('.filter-item').forEach(item => {
-		  item.classList.remove('active');
-		});
-	  });
-	  
-	  document.getElementById('apply-prices').addEventListener('click', () => {
-		minPrice = parseInt(document.getElementById('min-price').value) || 1;
-		maxPrice = parseInt(document.getElementById('max-price').value) || 99999;
-		
-		minPrice = Math.max(1, Math.min(minPrice, 99999));
-		maxPrice = Math.max(1, Math.min(maxPrice, 99999));
-		
-		if (minPrice > maxPrice) {
-		  [minPrice, maxPrice] = [maxPrice, minPrice];
-		}
-		
-		document.getElementById('price-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
-	  
-	  document.getElementById('clear-prices').addEventListener('click', () => {
-		minPrice = 1;
-		maxPrice = 99999;
-		document.getElementById('min-price').value = minPrice;
-		document.getElementById('max-price').value = maxPrice;
-		updateRangeSlider();
-	  });
-	  
-	  document.getElementById('apply-sort').addEventListener('click', () => {
-		document.getElementById('sort-modal').classList.remove('open');
-		renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-	  });
-	  
-	  document.querySelectorAll('.sort-item').forEach(item => {
-		item.addEventListener('click', () => {
-		  document.querySelectorAll('.sort-item').forEach(i => i.classList.remove('active'));
-		  item.classList.add('active');
-		  sortMethod = item.dataset.sort;
-		});
-	  });
-	  
-	  // Выбор моделей для фильтра
-	  document.addEventListener('click', (e) => {
-		if (e.target.classList.contains('filter-item') || e.target.closest('.filter-item')) {
-		  const item = e.target.closest('.filter-item');
-		  const modelId = item.dataset.model;
-		  const model = giftsData.allModels.find(m => m.id === modelId);
-		  
-		  if (item.classList.contains('active')) {
-			item.classList.remove('active');
-			selectedModels = selectedModels.filter(m => m.id !== modelId);
-		  } else {
-			item.classList.add('active');
-			selectedModels.push(model);
-		  }
-		}
-	  });
-	}
-
-	function renderModelList() {
-	  const container = document.getElementById('model-list');
-	  container.innerHTML = '';
-	  
-	  giftsData.allModels.forEach(model => {
-		const isActive = selectedModels.some(m => m.id === model.id);
-		
-		const item = document.createElement('div');
-		item.className = `filter-item ${isActive ? 'active' : ''}`;
-		item.dataset.model = model.id;
-		item.innerHTML = `
-		  <div style="font-size: 20px;">${model.emoji}</div>
-		  <div>${model.name}</div>
-		`;
-		container.appendChild(item);
-	  });
-	}
-
-	function updateAppliedFilters() {
-	  const container = document.getElementById('applied-filters');
-	  container.innerHTML = '';
-	  
-	  selectedModels.forEach(model => {
-		const filter = document.createElement('div');
-		filter.className = 'applied-filter';
-		filter.innerHTML = `
-		  <span>${model.emoji}</span>
-		  ${model.name}
-		  <span class="remove-filter" data-model="${model.id}">×</span>
-		`;
-		container.appendChild(filter);
-	  });
-	  
-	  if (minPrice > 1 || maxPrice < 99999) {
-		const filter = document.createElement('div');
-		filter.className = 'applied-filter';
-		filter.innerHTML = `
-		  💰 ${minPrice} - ${maxPrice} TON
-		  <span class="remove-filter" data-filter="price">×</span>
-		`;
-		container.appendChild(filter);
-	  }
-	  
-	  if (sortMethod !== 'asc') {
-		const filter = document.createElement('div');
-		filter.className = 'applied-filter';
-		filter.innerHTML = `
-		  ↕️ По убыванию
-		  <span class="remove-filter" data-filter="sort">×</span>
-		`;
-		container.appendChild(filter);
-	  }
-	  
-	  // Обработчики удаления фильтров
-	  document.querySelectorAll('.remove-filter').forEach(btn => {
-		btn.addEventListener('click', (e) => {
-		  e.stopPropagation();
-		  const filterType = btn.dataset.filter;
-		  const modelId = btn.dataset.model;
-		  
-		  if (filterType === 'price') {
-			minPrice = 1;
-			maxPrice = 99999;
-		  } else if (filterType === 'sort') {
-			sortMethod = 'asc';
-		  } else if (modelId) {
-			selectedModels = selectedModels.filter(m => m.id !== modelId);
-		  }
-		  
-		  renderGifts(document.querySelector('.subtab.active').dataset.subtab);
-		});
-	  });
-	}
-
-	// Функция обновления маркета
-	function refreshMarket() {
-	  const activeTab = document.querySelector('#market-screen .subtab.active');
-	  if (activeTab && activeTab.dataset.subtab === 'channels') {
-		renderGifts('channels');
-	  }
-	}
-
-	// Адаптация высоты контента
 	function adjustContentHeight() {
-	  const header = document.querySelector('.header');
-	  const footer = document.querySelector('.footer-nav');
-	  const content = document.querySelector('.content');
-	  
-	  if (header && footer && content) {
-		const headerHeight = header.offsetHeight;
-		const footerHeight = footer.offsetHeight;
-		const newHeight = window.innerHeight - (headerHeight + footerHeight);
-		content.style.height = `${newHeight}px`;
-	  }
+	const header = document.querySelector('.header');
+	const footer = document.querySelector('.footer-nav');
+	const content = document.querySelector('.content');
+
+	if (header && footer && content) {
+	const headerHeight = header.offsetHeight;
+	const footerHeight = footer.offsetHeight;
+	const newHeight = window.innerHeight - (headerHeight + footerHeight);
+	content.style.height = `${newHeight}px`;
+	}
 	}
 
 	window.addEventListener('load', adjustContentHeight);
 	window.addEventListener('resize', adjustContentHeight);
-
 	if (window.Telegram && Telegram.WebApp) {
-	  Telegram.WebApp.ready();
-	  Telegram.WebApp.expand();
-	  Telegram.WebApp.onEvent('viewportChanged', adjustContentHeight);
+	Telegram.WebApp.onEvent('viewportChanged', adjustContentHeight);
 	}
   </script>
 </body>
