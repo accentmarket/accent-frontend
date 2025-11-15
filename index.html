@@ -813,6 +813,17 @@
       <button class="btn btn-primary" id="apply-sort">Применить</button>
     </div>
   </div>
+  <div class="filter-modal" id="model-modal">
+    <div class="modal-close" id="model-close">×</div>
+    <div class="modal-header">
+      <h3>Модель</h3>
+    </div>
+    <div class="model-list" id="model-list"></div>
+    <div class="filter-footer">
+      <button class="btn btn-outline" id="clear-models">Сбросить</button>
+      <button class="btn btn-primary" id="apply-models">Применить</button>
+    </div>
+  </div>
   <div class="footer-nav">
     <div class="nav-item active" data-tab="market" data-inactive="https://accent-frontend.vercel.app/market-icon.png" data-active="https://accent-frontend.vercel.app/market-icon-active.png">
       <div class="nav-icon"><img src="https://accent-frontend.vercel.app/market-icon-active.png" alt="Маркет"></div>
@@ -1090,7 +1101,7 @@
 		'https://accent-frontend.vercel.app/gift-icon.png',
 		'https://accent-frontend.vercel.app/gift-icon-active.png',
 		'https://accent-frontend.vercel.app/activity.png',
-		'https://accent-frontend.vercel.app/activity-active.png',
+		'https://accent-frontend.vercel/app/activity-active.png',
 		'https://accent-frontend.vercel.app/profile.png',
 		'https://accent-frontend.vercel.app/profile-active.png',
 		'https://accent-frontend.vercel.app/channel-icon.png',
@@ -1400,6 +1411,21 @@
 	  }
 	}
 	function initFilters() {
+	  const modelFilter = document.getElementById('model-filter');
+	  if (modelFilter) {
+		modelFilter.addEventListener('click', () => {
+		  renderModelList();
+		  document.getElementById('model-modal').classList.add('open');
+		});
+	  }
+	  
+	  const modelClose = document.getElementById('model-close');
+	  if (modelClose) {
+		modelClose.addEventListener('click', () => {
+		  document.getElementById('model-modal').classList.remove('open');
+		});
+	  }
+	  
 	  const priceFilter = document.getElementById('price-filter');
 	  if (priceFilter) {
 		priceFilter.addEventListener('click', () => {
@@ -1432,6 +1458,24 @@
 	  if (sortClose) {
 		sortClose.addEventListener('click', () => {
 		  document.getElementById('sort-modal').classList.remove('open');
+		});
+	  }
+	  
+	  const applyModels = document.getElementById('apply-models');
+	  if (applyModels) {
+		applyModels.addEventListener('click', () => {
+		  document.getElementById('model-modal').classList.remove('open');
+		  renderGifts(document.querySelector('.subtab.active').dataset.subtab);
+		});
+	  }
+	  
+	  const clearModels = document.getElementById('clear-models');
+	  if (clearModels) {
+		clearModels.addEventListener('click', () => {
+		  selectedModels = [];
+		  document.querySelectorAll('.filter-item').forEach(item => {
+			item.classList.remove('active');
+		  });
 		});
 	  }
 	  
@@ -1477,7 +1521,37 @@
 		});
 	  });
 	  
+	  document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('filter-item') || e.target.closest('.filter-item')) {
+		  const item = e.target.closest('.filter-item');
+		  const modelId = item.dataset.model;
+		  const model = giftsData.allModels.find(m => m.id === modelId);
+		  if (item.classList.contains('active')) {
+			item.classList.remove('active');
+			selectedModels = selectedModels.filter(m => m.id !== modelId);
+		  } else {
+			item.classList.add('active');
+			selectedModels.push(model);
+		  }
+		}
+	  });
+	  
 	  updateRangeSlider();
+	}
+	function renderModelList() {
+	  const container = document.getElementById('model-list');
+	  container.innerHTML = '';
+	  giftsData.allModels.forEach(model => {
+		const isActive = selectedModels.some(m => m.id === model.id);
+		const item = document.createElement('div');
+		item.className = `filter-item ${isActive ? 'active' : ''}`;
+		item.dataset.model = model.id;
+		item.innerHTML = `
+		  <div class="gift-icon">${model.emoji}</div>
+		  <div>${model.name}</div>
+		`;
+		container.appendChild(item);
+	  });
 	}
 	function updateRangeSlider() {
 	  const minPriceInput = document.getElementById('min-price');
