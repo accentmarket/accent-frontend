@@ -848,6 +848,7 @@
     let telegramUser = null;
     const API_BASE_URL = 'https://accent-backend.vercel.app/api';
     let tonConnectUI;
+	const API_URL = 'https://accent-backend.vercel.app/api';
     let wallet = null;
     let isTonConnected = false;
     let selectedModels = [];
@@ -893,6 +894,36 @@
           updateUserAvatar(telegramUser);
         }
       }
+	  async function loadUserBalance() {
+		if (!telegramId) {
+        console.error('Telegram ID не получен');
+        return;
+		}
+    
+		try {
+        const res = await fetch(API_URL + '/user?telegram_id=' + telegramId);
+        const data = await res.json();
+        
+        if (data.balance !== undefined) {
+            // Обновляем баланс в шапке
+            const headerBalance = document.getElementById('header-balance');
+            if (headerBalance) {
+                headerBalance.innerHTML = '+ ' + data.balance.toFixed(2) + ' TON';
+            }
+            
+            // Обновляем баланс в профиле
+            const profileBalance = document.getElementById('ton-wallet-balance');
+            if (profileBalance) {
+                profileBalance.textContent = data.balance.toFixed(2);
+            }
+        }
+		} catch (e) {
+        console.error('Ошибка загрузки баланса:', e);
+		}
+		}
+
+	  // Вызываем функцию при загрузке
+	  loadUserBalance();
       initTonConnect();
       renderGifts('channels');
       setupEventListeners();
@@ -1664,6 +1695,7 @@
     window.addEventListener('resize', adjustContentHeight);
     if (window.Telegram && Telegram.WebApp) {
       Telegram.WebApp.ready();
+	  loadUserBalance();
       Telegram.WebApp.expand();
       Telegram.WebApp.onEvent('viewportChanged', adjustContentHeight);
     }
