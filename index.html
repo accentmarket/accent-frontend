@@ -689,7 +689,7 @@
             <div class="wallet-info">
               <div>✅ TON кошелек подключен</div>
               <div class="wallet-address" id="wallet-address"></div>
-              <div class="wallet-balance">Баланс: <span id="ton-wallet-balance">0</span> TON</div>
+              <div class="wallet-balance">Баланс: <span id="market-balance"0</span> TON</div>
               <button class="disconnect-btn" id="disconnect-wallet">Отключить кошелек</button>
             </div>
           </div>
@@ -701,7 +701,7 @@
           </div>
         </div>
         <div class="balance" style="font-size: 18px; margin: 12px 0; font-weight: 600;" id="profile-balance">0.00 TON</div>
-        <button class="btn btn-primary" style="width: 100%;" id="replenish-btn">Пополнить баланс</button>
+        <button class="btn btn-primary" style="width: 100%" id="replenish-btn" onclick="openTopUpModal()">Пополнить баланс</button>
         <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1);">
           <h4 style="margin-bottom: 20px; color: var(--text-secondary);">Наши ресурсы</h4>
           <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -736,16 +736,15 @@
     <div class="modal-btns" id="modal-buttons"></div>
   </div>
   <div class="replenish-modal" id="replenish-modal">
-    <div class="modal-close" id="replenish-close">×</div>
-    <div class="modal-header">
-      <h3>Пополнение баланса</h3>
-    </div>
-    <div class="instructions" id="replenish-instructions"></div>
-    <div class="input-group">
-      <label for="replenish-amount">Сумма в TON</label>
-      <input type="number" class="input-control" id="replenish-amount" placeholder="0.0" min="0.1" step="0.1">
-    </div>
-    <button class="btn btn-primary" style="width: 100%;" id="confirm-replenish">Пополнить баланс</button>
+	<div class="modal-content">
+		<div class="modal-header">
+		<h3>Пополнение баланса</h3>
+		<button class="modal-close" onclick="closeReplenishModal()">×</button>
+	</div>
+    <div id="replenish-instructions"></div>
+    <input type="number" id="replenish-amount" class="input" placeholder="0.00" min="1" step="0.1">
+    <button class="btn btn-pink" onclick="processReplenish()">Пополнить баланс</button>
+	</div>
   </div>
   <div class="add-channel-modal" id="add-channel-modal">
     <div class="modal-close" id="add-channel-close">×</div>
@@ -912,14 +911,40 @@
             }
             
             // Обновляем баланс в профиле
-            const profileBalance = document.getElementById('ton-wallet-balance');
+            const profileBalance = document.getElementById('market-balance');
             if (profileBalance) {
                 profileBalance.textContent = data.balance.toFixed(2);
             }
         }
-		} catch (e) {
-        console.error('Ошибка загрузки баланса:', e);
+			} catch (e) {
+			console.error('Ошибка загрузки баланса:', e);
 		}
+		}
+		// Модальное окно пополнения баланса
+		function openTopUpModal() {
+			const modal = document.getElementById('topUpModal');
+			if (modal) {
+				modal.style.display = 'flex';
+			}
+		}
+
+		function closeTopUpModal() {
+			const modal = document.getElementById('topUpModal');
+			if (modal) {
+				modal.style.display = 'none';
+			}
+		}
+
+		async function processTopUp() {
+			const amount = document.getElementById('topUpAmount').value;
+			if (!amount || amount <= 0) {
+				alert('Введите корректную сумму');
+				return;
+			}
+			
+			// Здесь будет логика пополнения через TON
+			alert('Пополнение на ' + amount + ' TON (в разработке)');
+			closeTopUpModal();
 		}
 
 	  // Вызываем функцию при загрузке
@@ -1330,9 +1355,23 @@
       document.getElementById('replenish-modal').classList.add('open');
     }
     
-    function closeReplenishModal() {
-      document.getElementById('replenish-modal').classList.remove('open');
-    }
+	function closeReplenishModal() {
+		document.getElementById('replenish-modal').classList.remove('open');
+	}
+
+	async function processReplenish() {
+		const amount = document.getElementById('replenish-amount').value;
+		
+		if (!amount || amount < 0.1) {
+			alert('Минимальная сумма пополнения: 0.1 TON');
+			return;
+		}
+		
+		// Здесь будет логика пополнения через TON
+		// Пока просто закрываем модалку
+		alert('Пополнение на ' + amount + ' TON (в разработке)');
+		closeReplenishModal();
+	}
     
     function setupEventListeners() {
       const modalClose = document.getElementById('modal-close');
